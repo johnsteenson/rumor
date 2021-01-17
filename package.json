@@ -1,0 +1,26 @@
+{
+  "name": "rumor",
+  "version": "1.0.0",
+  "description": "A web-based RPG creation platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnsteenson/rumor.git"
+  },
+  "keywords": [
+    "rpg",
+    "web",
+    "games"
+  ],
+  "workspaces": [
+    "rumor-common/*"
+  ],
+  "author": "John Steenson",
+  "bugs": {
+    "url": "https://github.com/johnsteenson/rumor/issues"
+  },
+  "homepage": "https://github.com/johnsteenson/rumor#readme"
+}

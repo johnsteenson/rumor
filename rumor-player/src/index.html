@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Rumor Player</title>
+</head>
+
+<body>
+  <script type="text/javascript">
+    window.rumor = {
+      title: "My Kewl Adventure",
+      canvasSize: {
+        w: 320,
+        h: 240
+      },
+      tileSize: {
+        w: 16,
+        h: 16,
+        scale: 1, // TODO May remove
+        scaledW: 16,
+        scaledH: 16
+      }
+    };
+  </script>
+  <div class="stage">
+    <canvas id="game"></canvas>
+  </div>
+
+</body>
+
+</html>

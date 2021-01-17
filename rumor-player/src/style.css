@@ -1,0 +1,13 @@
+body {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+canvas {
+  width: 933px;
+  height: 700px;
+}
+
+div.stage {
+  margin-left: 5%;
+}
