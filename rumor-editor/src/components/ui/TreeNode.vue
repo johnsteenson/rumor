@@ -14,10 +14,10 @@
         @click="select(item, $event)"
         @dblclick="expand(item, $event)"
         @contextmenu="contextMenu(item, $event)"
-        :class="{'tree-selected': (selectedId === item.id)}"
+        :class="{ 'tree-selected': selectedId === item.id }"
       >
         <component :is="item.icon" v-if="item.icon" />
-        {{item.label}}
+        {{ item.label }}
       </span>
       <TreeNode
         v-show="!treeState.collapsed[item.id]"
@@ -36,7 +36,7 @@ import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import PlusBoxMultipleOutline from "vue-material-design-icons/PlusBoxMultipleOutline.vue";
 import MinusBoxMultipleOutline from "vue-material-design-icons/MinusBoxMultipleOutline.vue";
 
-import FileDocumentBoxOutline from "vue-material-design-icons/FileDocumentBoxOutline.vue";
+import FileDocumentBoxOutline from "vue-material-design-icons/FileDocumentOutline.vue";
 import FolderOutline from "vue-material-design-icons/FolderOutline.vue";
 
 import { TreeItem, TreeState } from "@/lib/ui/tree";
@@ -47,8 +47,8 @@ import { TreeItem, TreeState } from "@/lib/ui/tree";
     plus: PlusBoxMultipleOutline,
     minus: MinusBoxMultipleOutline,
     file: FileDocumentBoxOutline,
-    folder: FolderOutline
-  }
+    folder: FolderOutline,
+  },
 })
 export default class TreeNode extends Vue {
   @Prop() private items!: TreeItem[];

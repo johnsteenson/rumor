@@ -44,8 +44,8 @@ import TilePalette from "@/components/world/TilePalette.vue";
 import TileDebug from "@/components/world/TileDebug.vue";
 import TileToolbar from "@/components/world/TileToolbar.vue";
 import MapTree from "@/components/world/MapTree.vue";
-import { Tileset, TilesetView, ToolView } from "@/types/tileset";
-import { MapView, TileMap, TileSelection } from "../types/map";
+import { Tileset, TilesetView, ToolView } from "@rumor/common";
+import { MapView, TileMap, TileSelection } from "@rumor/common";
 
 import { mapStore } from "@/world";
 

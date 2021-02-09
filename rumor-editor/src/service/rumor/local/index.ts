@@ -2,8 +2,8 @@ import { RumorService } from "@/service/rumor/interface";
 import { createMap } from '@/lib/world/tilemap';
 
 import tileset from "@/data/tileset-world.json";
-import { TileMap } from '@/types/map';
-import { Tileset } from '@/types/tileset';
+import { TileMap } from '@rumor/common';
+import { Tileset } from '@rumor/common';
 import { Store } from 'vuex';
 
 export class RumorServiceLocal extends RumorService {

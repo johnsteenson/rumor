@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { MutationTree } from 'vuex';
 import { WorldState } from './types';
-import { TileChange, TileChangeEntry, TileSelection } from '@/types/map';
+import { TileChange, TileChangeEntry, TileSelection } from '@rumor/common';
 
 export const mutations: MutationTree<WorldState> = {
 

@@ -1,4 +1,4 @@
-import { Point, Rect, Dimension } from '@/types/geometry';
+import { Point, Rect, Dimension } from '@rumor/common';
 
 export function createRectFromPts(p1: Point, p2: Point, maxSize?: number): Rect {
   let l, r, t, b;

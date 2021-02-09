@@ -1,7 +1,7 @@
 {
   "name": "rumor-player",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "serve": "webpack-dev-server --env dev --mode none",
     "build": "webpack --env prod --mode production"
@@ -21,7 +21,7 @@
     "html-webpack-plugin": "^4.4.1",
     "mini-css-extract-plugin": "^0.9.0",
     "ts-loader": "^6.2.2",
-    "typescript": "^4.0.2",
+    "typescript": "^4.1.3",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",

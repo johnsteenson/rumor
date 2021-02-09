@@ -14,10 +14,10 @@ import {
   TilesetSection,
   TemplateTile,
   Tile
-} from "@/types/tileset";
-import { TileSize, Rect } from "@/types/geometry";
+} from "@rumor/common";
+import { TileSize, Rect } from "@rumor/common";
 import TilesetBase from "./TilesetBase.vue";
-import { TileSelection } from "../../types/map";
+import { TileSelection } from "@rumor/common";
 
 const world = namespace("world");
 

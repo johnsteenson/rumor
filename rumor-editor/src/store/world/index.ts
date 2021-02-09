@@ -4,7 +4,7 @@ import { actions } from './actions';
 import { mutations } from './mutations';
 import { WorldState } from './types';
 import { RootState } from '../types';
-import { ToolType } from '@/types/map';
+import { ToolType } from '@rumor/common';
 
 const namespaced: boolean = true,
   state: WorldState = {

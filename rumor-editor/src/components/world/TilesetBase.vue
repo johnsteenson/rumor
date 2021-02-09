@@ -7,18 +7,19 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { ImageManager } from "@/canvas/imageManager";
-import {
-  Tileset,
-  TilesetView,
-  TileAnim,
-  TilesetSection,
-  Tile,
-  TemplateTile
-} from "@/types/tileset";
-import { TileImage } from "@/canvas/tileImage";
-import { Rect, TileSize, TileDrawRect, Point } from "@/types/geometry";
-import { TileSelection } from "../../types/map";
+import { ImageManager } from "@rumor/common";
+
+// /
+// import {
+//   Tileset,
+//   TilesetView,
+//   TileAnim,
+//   TilesetSection,
+//   Tile,
+//   TemplateTile,
+// } from "@/types/tileset";
+
+import * as Rumor from "@rumor/common";
 
 import CanvasBase from "./CanvasBase.vue";
 
@@ -28,13 +29,13 @@ const world = namespace("world");
 export default class TilesetBase extends CanvasBase {
   protected canvas!: HTMLCanvasElement;
   protected context!: CanvasRenderingContext2D;
-  protected image!: TileImage;
-  protected section!: TilesetSection;
+  protected image!: Rumor.TileImage;
+  protected section!: Rumor.TilesetSection;
   protected tilesPerRow: number = 0;
 
-  protected tileDrawRect!: TileDrawRect;
+  protected tileDrawRect!: Rumor.TileDrawRect;
 
-  protected tileSize: TileSize = {
+  protected tileSize: Rumor.TileSize = {
     w: 0,
     h: 0,
     scaledW: 0,
@@ -42,12 +43,12 @@ export default class TilesetBase extends CanvasBase {
     scale: 0
   };
 
-  @Prop() protected tilesetView!: TilesetView;
+  @Prop() protected tilesetView!: Rumor.TilesetView;
 
   @Prop() protected disableCanvasResize!: boolean;
 
   @Watch("tilesetView", { immediate: true, deep: true }) tilesetChange(
-    view: TilesetView
+    view: Rumor.TilesetView
   ) {
     this.$nextTick(() => {
       this.loadTilesetView(view);
@@ -65,7 +66,7 @@ export default class TilesetBase extends CanvasBase {
     });
   }
 
-  public async loadTilesetView(view: TilesetView) {
+  public async loadTilesetView(view: Rumor.TilesetView) {
     this.section = view.tileset.sections[view.curSection];
 
     this.tileSize = view.tileSize;
@@ -98,7 +99,7 @@ export default class TilesetBase extends CanvasBase {
     this.draw();
   }
 
-  public calculateTileDrawRect(tileSize: TileSize): TileDrawRect {
+  public calculateTileDrawRect(tileSize: Rumor.TileSize): Rumor.TileDrawRect {
     const w =
         Math.ceil(
           this.section.templateTiles.length / this.section.tilesPerRow
@@ -106,7 +107,7 @@ export default class TilesetBase extends CanvasBase {
       h = Math.ceil(
         this.section.templateTiles.length / this.section.tilesPerRow
       ),
-      tileRect: Rect = {
+      tileRect: Rumor.Rect = {
         l: Math.floor(this.scrollRect.innerL / this.tileSize.scaledW),
         r: Math.min(
           Math.ceil(this.scrollRect.innerR / this.tileSize.scaledW),
@@ -118,7 +119,7 @@ export default class TilesetBase extends CanvasBase {
           h
         )
       },
-      offset: Point = {
+      offset: Rumor.Point = {
         x: tileRect.l * this.tileSize.scaledW,
         y: tileRect.t * this.tileSize.scaledH - this.scrollRect.innerT
       };
@@ -136,9 +137,9 @@ export default class TilesetBase extends CanvasBase {
       return;
     }
 
-    const tileset: Tileset = this.tilesetView.tileset,
-      tileSize: TileSize = this.tileSize,
-      section: TilesetSection = this.section,
+    const tileset: Rumor.Tileset = this.tilesetView.tileset,
+      tileSize: Rumor.TileSize = this.tileSize,
+      section: Rumor.TilesetSection = this.section,
       drawRect = this.calculateTileDrawRect(tileSize),
       startIndex = drawRect.tile.t * this.section.tilesPerRow + drawRect.tile.l;
 
@@ -146,10 +147,10 @@ export default class TilesetBase extends CanvasBase {
       sy: number = drawRect.offset.y,
       i = 0,
       k = 0,
-      templateTile: TemplateTile,
+      templateTile: Rumor.TemplateTile,
       tileIndex: number,
       imgTileIndex: number,
-      tile: Tile;
+      tile: Rumor.Tile;
 
     this.context.fillStyle = "#ff678b";
     this.context.rect(0, 0, this.canvas.width, this.canvas.height);

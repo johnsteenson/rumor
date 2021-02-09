@@ -1,6 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
-import { visitSurroundingTiles, getRectangularTileIndex } from '@/lib/world/autotile';
-import { CircularBuffer } from '@/types/circularBuffer';
+import { CircularBuffer } from '../../src/types/circularBuffer';
 
 describe('Circular Buffer', () => {
   it('should get back object after first insert', () => {

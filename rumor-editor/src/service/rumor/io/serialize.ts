@@ -1,4 +1,4 @@
-import { TileChangeEntry } from '@/types/map';
+import { TileChangeEntry } from '@rumor/common';
 
 const MAP_BYTES = 2,
   FIELDS_TO_SERIALIZE = 5;

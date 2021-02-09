@@ -1,4 +1,4 @@
-import { TileAnim } from '@/types/tileset';
+import { TileAnim } from '@rumor/common';
 
 export function getFirstTile(anim: TileAnim): number {
   if (Array.isArray(anim)) {

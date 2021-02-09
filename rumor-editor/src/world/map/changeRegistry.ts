@@ -1,6 +1,6 @@
-import { TileMap, TileChangeEntry, TileChange } from '@/types/map';
-import { CircularBuffer } from '@/types/circularBuffer';
-import { Nullable } from '@/types/primitives';
+import { TileMap, TileChangeEntry, TileChange } from '@rumor/common';
+import { CircularBuffer } from '@rumor/common';
+import { Nullable } from '@rumor/common';
 
 const UNDO_BUFFER_SIZE = 5;
 

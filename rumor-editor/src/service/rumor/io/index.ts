@@ -1,8 +1,8 @@
 import { RumorService } from "@/service/rumor/interface";
 
 import { createLayers } from "@/lib/world/tilemap";
-import { TileMap, TileChange, TileChangeEntry, TileMapTree } from '@/types/map';
-import { Tileset } from '@/types/tileset';
+import { TileMap, TileChange, TileChangeEntry, TileMapTree } from '@rumor/common';
+import { Tileset } from '@rumor/common';
 
 import { serializeChanges, deserializeChanges } from './serialize';
 import { connectSocket, ConnectResponse } from './connect';

@@ -1,4 +1,4 @@
-import { Dimension } from '@/types/geometry';
+import { Dimension } from '@rumor/common';
 
 export interface ProjectState {
   title: string;

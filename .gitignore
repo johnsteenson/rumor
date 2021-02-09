@@ -1,4 +1,5 @@
 node_modules
+rumor-common/dist
 rumor-editor/dist
 rumor-player/assets
 *.png

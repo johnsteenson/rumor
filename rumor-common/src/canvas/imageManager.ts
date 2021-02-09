@@ -1,5 +1,5 @@
-import { TileSize } from '@/types/geometry';
-import { TileImage } from '@/canvas/tileImage';
+import { TileSize } from '../types/geometry';
+import { TileImage } from '../canvas/tileImage';
 
 export class ImageManager {
   public static getInstance(): ImageManager {
@@ -42,7 +42,7 @@ export class ImageManager {
   private fetchImage(imagePath: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       if (this.imageFiles.has(imagePath)) {
-        return resolve(this.imageFiles.get(imagePath));
+        return resolve(this.imageFiles.get(imagePath)!);
       }
 
       const img: HTMLImageElement = new Image();

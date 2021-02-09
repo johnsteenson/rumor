@@ -16,7 +16,9 @@
     "games"
   ],
   "workspaces": [
-    "rumor-common/*"
+    "rumor-common",
+    "rumor-editor",
+    "rumor-player"
   ],
   "author": "John Steenson",
   "bugs": {

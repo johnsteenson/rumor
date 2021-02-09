@@ -2,10 +2,10 @@ import { GetterTree } from 'vuex';
 import { WorldState } from './types';
 import { RootState } from '../types';
 
-import { Tileset, TilesetView, ToolView } from '@/types/tileset';
-import { TileSize } from '@/types/geometry';
-import { Nullable } from '@/types/primitives'
-import { MapView, ToolType } from '@/types/map';
+import { Tileset, TilesetView, ToolView } from '@rumor/common';
+import { TileSize } from '@rumor/common';
+import { Nullable } from '@rumor/common'
+import { MapView, ToolType } from '@rumor/common';
 
 import { mapStore } from '@/world';
 

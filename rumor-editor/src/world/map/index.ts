@@ -1,4 +1,4 @@
-import { TileMap, TileChange, TileChangeEntry } from '@/types/map';
+import { TileMap, TileChange, TileChangeEntry } from '@rumor/common';
 
 import { MapMutator } from './mutations';
 

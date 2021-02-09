@@ -1,9 +1,9 @@
-import { MapLayer } from '@/types/map';
-import { TemplateTileType, Tileset } from '@/types/tileset';
+import { MapLayer } from '@rumor/common';
+import { TemplateTileType, Tileset } from '@rumor/common';
 import { RECT_AUTOTILE_MAP, RECT_AUTOTILE_MAP_MASK, WATER_AUTOTILE_MAP, WATER_AUTOTILE_MAP_MASK } from './autotile-map';
 import * as tilemap from './tilemap';
 import * as tilesetUtils from './tileset';
-import { Point } from '@/types/geometry';
+import { Point } from '@rumor/common';
 
 const SAME_TILE_N = 1024,
   SAME_TILE_W = 256,
@@ -164,6 +164,8 @@ export function calculateTileValue(layer: MapLayer, tileset: Tileset, x: number,
     case TemplateTileType.DEEP_WATER:
       return -1;
   }
+
+  return -1;
 }
 
 export function visitSurroundingTiles(x: number, y: number, w: number, h: number, mapW: number, mapH: number,

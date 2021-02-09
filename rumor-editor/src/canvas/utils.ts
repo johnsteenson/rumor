@@ -1,4 +1,4 @@
-import { Point } from '@/types/geometry';
+import * as Rumor from "@rumor/common";
 
 const BOX_WIDTH = 16;
 
@@ -119,7 +119,7 @@ export function getDownArrow() {
   return downArrow;
 }
 
-export function getMouseCoor(event: MouseEvent, canvas: HTMLCanvasElement): Point {
+export function getMouseCoor(event: MouseEvent, canvas: HTMLCanvasElement): Rumor.Point {
   const boundingRect = canvas.getBoundingClientRect(),
     xScale = canvas.width / (boundingRect.right - boundingRect.left),
     yScale = canvas.height / (boundingRect.bottom - boundingRect.top);

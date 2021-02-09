@@ -1,4 +1,4 @@
-import { TileChange } from '@/types/map';
+import { TileChange } from '@rumor/common';
 import { Store } from 'vuex';
 
 export abstract class RumorService {

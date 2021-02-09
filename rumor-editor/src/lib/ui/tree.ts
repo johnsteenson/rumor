@@ -1,4 +1,4 @@
-import { Nullable } from '@/types/primitives';
+import { Nullable } from '@rumor/common';
 
 
 export interface TreeItem {

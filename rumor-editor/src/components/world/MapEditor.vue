@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch, Inject } from "vue-property-decorator";
-import { TileSize, Rect, Point } from "@/types/geometry";
+import { TileSize, Rect, Point } from "@rumor/common";
 import {
   isRectEqual,
   createRectFromPts,
@@ -37,7 +37,7 @@ import {
   TileDraw,
   TileChange,
   TileSelection
-} from "../../types/map";
+} from "@rumor/common";
 
 import { namespace } from "vuex-class";
 

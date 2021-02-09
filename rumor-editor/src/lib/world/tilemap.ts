@@ -1,5 +1,5 @@
-import { MapLayer, TileMap } from '@/types/map';
-import { Tileset } from '@/types/tileset';
+import { MapLayer, TileMap } from '@rumor/common';
+import { Tileset } from '@rumor/common';
 
 const MAP_BYTE_SIZE = 2,
   LAYERS = 2,

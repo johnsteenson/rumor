@@ -1,6 +1,10 @@
 <template>
   <div class="map-tree-container">
-    <TreeView :selectedId="selectedId" :treeRoot="treeRoot" @treeItemSelected="treeItemSelected" />
+    <TreeView
+      :selectedId="selectedId"
+      :treeRoot="treeRoot"
+      @treeItemSelected="treeItemSelected"
+    />
   </div>
 </template>
 
@@ -12,7 +16,7 @@ import { getServiceInterface } from "@/service/rumor";
 
 import TreeView from "@/components/ui/TreeView.vue";
 import { TreeItem } from "../../lib/ui/tree";
-import { TileMapTree } from "../../types/map";
+import { TileMapTree } from "@rumor/common";
 
 const world = namespace("world");
 

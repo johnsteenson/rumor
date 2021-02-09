@@ -1,4 +1,4 @@
-import { TileSize } from '@/types/geometry';
+import { TileSize } from '../types/geometry';
 
 export class TileImage {
   private canvas: HTMLCanvasElement;

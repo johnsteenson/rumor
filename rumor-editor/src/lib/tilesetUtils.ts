@@ -1,4 +1,4 @@
-import { Tileset, TilesetSection, TileType, TileAnim } from '@/types/tileset';
+import { Tileset, TilesetSection, TileType, TileAnim } from '@rumor/common';
 
 /*
 

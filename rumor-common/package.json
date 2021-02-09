@@ -1,0 +1,16 @@
+{
+  "name": "@rumor/common",
+  "version": "1.0.0",
+  "description": "Common types and functionality shared between player and editor",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "tsc"
+  },
+  "author": "John Steenson",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  }
+}

@@ -23,10 +23,10 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { namespace } from "vuex-class";
-import { TilesetView, ToolView } from "@/types/tileset";
-import { Axis, TileSize, Rect, Point } from "@/types/geometry";
+import { TilesetView, ToolView } from "@rumor/common";
+import { Axis, TileSize, Rect, Point } from "@rumor/common";
 import TilesetBase from "./TilesetBase.vue";
-import { TileSelection } from "../../types/map";
+import { TileSelection } from "@rumor/common";
 
 import { registerWindowEvent, unregisterWindowEvent } from "@/lib/windowEvent";
 

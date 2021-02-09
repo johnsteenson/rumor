@@ -1,7 +1,7 @@
 import { GetterTree } from 'vuex';
 import { ProjectState } from './types';
 import { RootState } from '../types';
-import { TileSize } from '@/types/geometry';
+import { TileSize } from '@rumor/common';
 
 export const getters: GetterTree<ProjectState, RootState> = {
   /*

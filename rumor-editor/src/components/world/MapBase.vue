@@ -5,26 +5,26 @@
 </template>
 
 <script lang="ts">
-import { ImageManager } from "@/canvas/imageManager";
+import { ImageManager } from "@rumor/common";
 import { Component, Prop, Vue, Watch, Inject } from "vue-property-decorator";
-import { TileSize, Rect, Point, TileDrawRect } from "@/types/geometry";
+import { TileSize, Rect, Point, TileDrawRect } from "@rumor/common";
 import {
   MapView,
   TileMap,
   TileChange,
   TileChangeEntry,
   TileDraw
-} from "../../types/map";
+} from "@rumor/common";
 
 import { namespace } from "vuex-class";
-import { TileImage } from "../../canvas/tileImage";
+import { TileImage } from "@rumor/common";
 import {
   Tileset,
   TilesetSection,
   Tile,
   TilesetView,
   ToolView
-} from "../../types/tileset";
+} from "@rumor/common";
 
 import * as resizeHandler from "@/lib/resizeHandler";
 import { unpackMapBuf } from "../../lib/world/tilemap";

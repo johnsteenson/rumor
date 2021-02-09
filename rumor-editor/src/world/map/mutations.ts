@@ -1,8 +1,8 @@
-import { TileMap, TileChange, TileDraw, TileChangeEntry } from "@/types/map";
+import { TileMap, TileChange, TileDraw, TileChangeEntry } from "@rumor/common";
 import { getRectangularTileIndex, visitSurroundingTiles, getWaterTileIndex, calculateTileValue, getSurroundingTiles, getAllTiles } from '@/lib/world/autotile';
-import { Point } from '@/types/geometry';
+import { Point } from '@rumor/common';
 import { unpackMapBuf, packMapBuf } from '@/lib/world/tilemap';
-import { TemplateTileType } from '@/types/tileset';
+import { TemplateTileType } from '@rumor/common';
 import { createRectFromPts } from '@/lib/geometry';
 import { ChangeRegistry } from './changeRegistry';
 
