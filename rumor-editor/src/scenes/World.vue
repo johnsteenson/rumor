@@ -81,13 +81,11 @@ export default class World extends Vue {
   private mounted() {
     const service = getServiceInterface();
 
-    service.onGetMap((mapData: any) => {
-      mapStore.map = mapData;
+    service.getMap("1").then((tileMap: TileMap) => {
+      mapStore.map = tileMap;
 
       this.mapLoaded = true;
     });
-
-    service.getMap("1");
   }
 
   tileSelected(selectedTileIndices: TileSelection) {

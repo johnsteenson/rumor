@@ -16,7 +16,8 @@ import { getServiceInterface } from "@/service/rumor";
 
 import TreeView from "@/components/ui/TreeView.vue";
 import { TreeItem } from "../../lib/ui/tree";
-import { TileMapTree } from "@rumor/common";
+import { TileMap, TileMapTree } from "@rumor/common";
+import { mapStore } from "@/world";
 
 const world = namespace("world");
 
@@ -62,7 +63,11 @@ export default class MapTree extends Vue {
   public treeItemSelected(treeItem: TreeItem) {
     this.selectedId = treeItem.id;
 
-    getServiceInterface().getMap(this.selectedId);
+    getServiceInterface()
+      .getMap(this.selectedId)
+      .then((map: TileMap) => {
+        mapStore.map = map;
+      });
   }
 }
 </script>

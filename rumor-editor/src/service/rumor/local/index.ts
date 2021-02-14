@@ -24,10 +24,8 @@ export class RumorServiceLocal extends RumorService {
 
   }
 
-  public getMap(mapId: string) {
-    if (this.onGetMapCallback) {
-      this.onGetMapCallback(this.map)
-    }
+  public async getMap(mapId: string): Promise<TileMap> {
+    return this.map;
   }
 
   public getMapTree() {

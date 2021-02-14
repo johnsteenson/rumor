@@ -23,14 +23,6 @@ export class RumorServiceIo extends RumorService {
   }
 
   private registerSocketEvents() {
-    this.socketClient.on("getMap", (mapData: any) => {
-      const map: TileMap = mapData as TileMap;
-      map.layer = createLayers(map.w, map.h, 2, map.buffer);
-      map.tileset = (tileset as unknown) as Tileset; // mapData.tileset as Tileset;
-
-      this.onGetMapCallback(map);
-    });
-
     this.socketClient.on("updateMap", (changes: ArrayBuffer) => {
       const tileChanges: TileChangeEntry[] = deserializeChanges(changes);
 
@@ -63,8 +55,15 @@ export class RumorServiceIo extends RumorService {
     });
   }
 
-  public getMap(mapId: string) {
-    this.socketClient.emit('getMap', mapId);
+  public getMap(mapId: string): Promise<TileMap> {
+    return new Promise((resolve, reject) => {
+      this.socketClient.emit('getMap', mapId, (mapData: any) => {
+        const map: TileMap = mapData as TileMap;
+        map.layer = createLayers(map.w, map.h, 2, map.buffer);
+        map.tileset = (tileset as unknown) as Tileset; // mapData.tileset as Tileset;
+        resolve(map);
+      });
+    });
   }
 
   public getMapTree() {

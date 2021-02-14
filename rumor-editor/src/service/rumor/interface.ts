@@ -1,4 +1,4 @@
-import { TileChange } from '@rumor/common';
+import { TileChange, TileMap } from '@rumor/common';
 import { Store } from 'vuex';
 
 export abstract class RumorService {
@@ -25,7 +25,7 @@ export abstract class RumorService {
 
   abstract registerStoreEvents(store: Store<any>): void;
 
-  abstract getMap(mapId: string): void;
+  abstract getMap(mapId: string): Promise<TileMap>;
 
   abstract getMapTree(): void;
 
