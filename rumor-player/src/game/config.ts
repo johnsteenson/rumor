@@ -1,7 +1,7 @@
-import { Dimension, TileSize } from "@/types/geometry";
+import * as Rumor from '@rumor/common';
 
 export interface RumorConfig {
   readonly title: string,
-  readonly canvasSize: Dimension,
-  readonly tileSize: TileSize
+  readonly canvasSize: Rumor.Dimension,
+  readonly tileSize: Rumor.TileSize
 }

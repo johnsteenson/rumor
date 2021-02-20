@@ -7,6 +7,9 @@ module.exports = {
   devtool: 'source-map',
   devServer: {
     open: false,
+    port: 8081,
+    contentBase: path.join(__dirname, '../assets'),
+    contentBasePublicPath: '/assets/'
   },
   module: {
     rules: [
@@ -41,9 +44,9 @@ module.exports = {
       hash: true,
       template: './src/index.html',
       filename: 'index.html'
-    }),
-    new CopyPlugin([
-      { from: 'assets', to: 'assets' }
-    ])
+    })
+    // new CopyPlugin([
+    //   { from: 'assets', to: 'assets' }
+    // ])
   ]
 };

@@ -1,7 +1,6 @@
 import { MapLoader } from "@/loader/interface";
-import { MapView, TileMap, MapLayer } from "@/types/map";
 import { ConnectResponse, client } from "@/service/connect";
-import { Tileset } from "@/types/tileset";
+import * as Rumor from '@rumor/common';
 
 import tileset from '@/data/tileset-world.json';
 
@@ -10,8 +9,8 @@ const MAP_BYTE_SIZE = 2,
   BASE_WATER_TILE = 4;
 
 
-export function createLayers(w: number, h: number, totalLayers: number, buffer: ArrayBuffer, fillBlank: boolean = false): MapLayer[] {
-  const layers: MapLayer[] = new Array(totalLayers),
+export function createLayers(w: number, h: number, totalLayers: number, buffer: ArrayBuffer, fillBlank: boolean = false): Rumor.MapLayer[] {
+  const layers: Rumor.MapLayer[] = new Array(totalLayers),
     totalTiles = w * h,
     halfPoint = buffer.byteLength / 2;
 
@@ -61,18 +60,18 @@ export class SocketMapLoader extends MapLoader {
     })
   }
 
-  public async loadMap(mapId: string): Promise<MapView> {
+  public async loadMap(mapId: string): Promise<Rumor.TileMap> {
     console.log('LOADING')
-    return new Promise<MapView>(async (resolve: Function, reject: Function) => {
+    return new Promise<Rumor.TileMap>(async (resolve: Function, reject: Function) => {
       const socket = await this.socket;
 
       console.log('GETTING MAP')
 
       socket.socketClient.emit('getMap', mapId, (mapData: any) => {
         console.log(mapData)
-        const map: TileMap = mapData as TileMap;
+        const map: Rumor.TileMap = mapData as Rumor.TileMap;
         map.layer = createLayers(map.w, map.h, 2, map.buffer);
-        map.tileset = (tileset as unknown) as Tileset; // mapData.tileset as Tileset;
+        map.tileset = (tileset as unknown) as Rumor.Tileset;
 
         resolve(map);
       });

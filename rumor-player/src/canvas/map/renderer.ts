@@ -1,54 +1,133 @@
-import { clipRectToArea } from "@/lib/geometry";
-import { Rect, TileSize } from "@/types/geometry";
-import { TileMap } from "@/types/map";
-import { Tile, Tileset } from "@/types/tileset";
-import * as PIXI from 'pixi.js';
-import game from "@/game";
-import { RumorConfig } from "@/game/config";
-import { TileImage } from "./tileImage";
-
-/*
-Class is instantied in root since it is dependent on asynchronous data
-*/
-export class MapRenderer {
-  private map: TileMap;
-
-  private tileImage: TileImage[];
-
-  private renderTexture: PIXI.RenderTexture;
-
-  private tileSize: TileSize;
-
-  constructor(config: RumorConfig) {
-    this.tileSize = config.tileSize;
-    this.renderTexture = PIXI.RenderTexture.create({ width: config.canvasSize.w, height: config.canvasSize.h });
+import * as Rumor from '@rumor/common';
 
 
-  }
+const LAYERS = 2;
 
-  public async loadMap(map: TileMap, tileset: Tileset) {
-    this.map = map;
+function unpackMapBuf(val: number): [number, number] {
+  return [(val & 0xF000) >> 12, (val & 0x0FFF)];
+}
 
-    const image = await TileImage.loadTileImage('/assets/images/world.png', window.rumor.tileSize);
+class MapRenderer {
+  private map: Rumor.TileMap;
 
-    /* TODO Hardcoded image for now */
-    this.tileImage = [image];
+  private tileset: Rumor.Tileset;
 
-  }
+  private image: Rumor.TileImage[];
 
-  public render(map: TileMap, rect: Rect): PIXI.RenderTexture {
-    const clipRect = clipRectToArea(rect, map.w, map.h);
-    const config = window.rumor;
+  private canvas: HTMLCanvasElement[] = [];
 
-    let x, y;
+  private context: CanvasRenderingContext2D[] = [];
 
-    for (y = rect.t; y < rect.b; y++) {
-      for (x = rect.l; x < rect.r; x++) {
+  private tilesRendered: Rumor.Dimension;
 
-      }
+  constructor() {
+    this.tilesRendered = {
+      w: (window.rumor.canvasSize.w / window.rumor.tileSize.w) + 2,
+      h: (window.rumor.canvasSize.h / window.rumor.tileSize.h) + 2
     }
 
-    return this.renderTexture;
+    for (let l = 0; l < LAYERS; l++) {
+      const canvas = document.createElement('canvas');
+      canvas.width = this.tilesRendered.w * window.rumor.tileSize.w;
+      canvas.height = this.tilesRendered.h * window.rumor.tileSize.h;
+
+      this.canvas[l] = canvas;
+      this.context[l] = canvas.getContext("2d") as CanvasRenderingContext2D;
+    }
   }
 
+  public async loadMap(map: Rumor.TileMap) {
+    this.map = map;
+    this.tileset = map.tileset;
+
+    const mapSectionsToImage = async (section: Rumor.TilesetSection) => {
+      return await Rumor.ImageManager.getInstance().getTileImage(
+        `/assets/images/${section.imageFile}`,
+        window.rumor.tileSize
+      );
+    };
+
+    this.image = await Promise.all(
+      this.tileset.sections.map((section: Rumor.TilesetSection) =>
+        mapSectionsToImage(section)
+      )
+    );
+  }
+
+
+  protected drawTile(
+    context: CanvasRenderingContext2D,
+    sectionId: number,
+    tileId: number,
+    sx: number,
+    sy: number
+  ) {
+    try {
+      const tile = this.tileset.sections[sectionId].tiles[tileId];
+
+      if (Array.isArray(tile.t)) {
+        const len: number = tile.flen || tile.t.length;
+        let quarter: number = tile.quarter || 255;
+
+        for (let k = 0; k < len; k++) {
+          this.image[sectionId].drawSubTiles(
+            context,
+            sx,
+            sy,
+            tile.t[k],
+            quarter
+          );
+          quarter = quarter >> 4;
+        }
+      } else {
+        this.image[sectionId].drawTile(context, sx, sy, tile.t as number);
+      }
+    } catch (error) {
+      console.log(
+        "ERROR DRAWING TILE: ",
+        this.image,
+        sectionId,
+        tileId,
+        sx,
+        sy
+      );
+      console.error(error);
+    }
+  }
+
+
+  public render(rect: Rumor.Rect, layer: number): HTMLCanvasElement {
+    if ((rect.b - rect.t) > this.tilesRendered.h
+      || (rect.r - rect.l) > this.tilesRendered.w) {
+      throw new RangeError("Calling render with bounds that exceed viewport");
+    }
+
+    console.time('render')
+
+    let sx = 0, sy = 0;
+    let mapBuf: number,
+      mapVal: number[];
+
+    for (let y = rect.t; y < rect.b; y++) {
+      for (let x = rect.l; x < rect.r; x++) {
+
+        mapBuf = this.map.layer[layer].visibleData[y * this.map.w + x];
+        mapVal = unpackMapBuf(mapBuf);
+
+        this.drawTile(this.context[layer], mapVal[0], mapVal[1], sx, sy);
+
+        sx = sx + window.rumor.tileSize.scaledW;
+      }
+      sx = 0;
+      sy = sy + window.rumor.tileSize.scaledH;
+    }
+
+    console.timeEnd('render')
+
+    return this.canvas[layer];
+  }
+
+
 }
+
+export default new MapRenderer();

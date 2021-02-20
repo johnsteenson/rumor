@@ -4,6 +4,9 @@ const path = require('path');
 const env = process.env.NODE_ENV || 'dev';
 
 const config = {
+  devServer: {
+    port: 8081
+  },
   entry: {
     main: './src/index.ts'
   },

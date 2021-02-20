@@ -39,7 +39,7 @@ export class ImageManager {
     return new TileImage(canvas, tileSize);
   }
 
-  private fetchImage(imagePath: string): Promise<HTMLImageElement> {
+  public fetchImage(imagePath: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       if (this.imageFiles.has(imagePath)) {
         return resolve(this.imageFiles.get(imagePath)!);
