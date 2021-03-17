@@ -5,3 +5,9 @@ export interface RumorConfig {
   readonly canvasSize: Rumor.Dimension,
   readonly tileSize: Rumor.TileSize
 }
+
+declare global {
+  interface Window {
+    rumor: RumorConfig;
+  }
+}

@@ -1,6 +1,5 @@
 import * as Rumor from '@rumor/common';
 
-
 const LAYERS = 2;
 
 function unpackMapBuf(val: number): [number, number] {

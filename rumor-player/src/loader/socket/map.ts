@@ -61,11 +61,8 @@ export class SocketMapLoader extends MapLoader {
   }
 
   public async loadMap(mapId: string): Promise<Rumor.TileMap> {
-    console.log('LOADING')
     return new Promise<Rumor.TileMap>(async (resolve: Function, reject: Function) => {
       const socket = await this.socket;
-
-      console.log('GETTING MAP')
 
       socket.socketClient.emit('getMap', mapId, (mapData: any) => {
         console.log(mapData)

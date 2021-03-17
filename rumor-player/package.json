@@ -7,7 +7,6 @@
     "build": "webpack --env prod --mode production"
   },
   "dependencies": {
-    "pixi.js": "^5.3.3",
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {

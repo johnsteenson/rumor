@@ -1,32 +1,46 @@
 import * as Rumor from '@rumor/common';
 import './style.css';
 
-import game from '@/game';
-import mapRenderer from '@/canvas/map/renderer';
-import Sprite from '@/canvas/sprite';
+import game from '@/app';
+import mapRenderer from '@/canvas/world/renderer';
+import Sprite from '@/canvas/gfx/sprite';
+
+import app from '@/app';
+import RenderScheduler from '@/canvas/scheduler'
+import InputManager from '@/input/manager'
+import World from '@/canvas/world';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 canvas.width = window.rumor.canvasSize.w;
 canvas.height = window.rumor.canvasSize.h;
 
-const loader = game.loader.map;
+async function main() {
+  const map = await app.mapLoader.loadMap('1');
 
+  World.getInstance().setMap(map);
+  World.getInstance().start();
 
+  InputManager.getInstance().keys.up.callback = (event: KeyboardEvent) => {
+    World.getInstance().scroll(0, -1, 1000);
+  }
 
-loader.loadMap('1').then(async (map: Rumor.TileMap) => {
-  console.log(map)
+  InputManager.getInstance().keys.right.callback = (event: KeyboardEvent) => {
+    World.getInstance().scroll(1, 0, 1000);
 
-  await mapRenderer.loadMap(map);
+  }
 
+  InputManager.getInstance().keys.down.callback = (event: KeyboardEvent) => {
+    World.getInstance().scroll(0, 1, 1000);
 
-  const layer = mapRenderer.render({ l: 0, t: 0, r: 20, b: 15 }, 0);
+  }
 
+  InputManager.getInstance().keys.left.callback = (event: KeyboardEvent) => {
+    World.getInstance().scroll(-1, 0, 1000);
 
+  }
 
-  canvas.getContext('2d').drawImage(layer, 0, 0);
+  RenderScheduler.getInstance().start();
 
-  const sprite = await Sprite.create(canvas, '/assets/images/souls.png', 0);
+}
 
-  sprite.draw(25, 50, 6);
-
-});
+main();
