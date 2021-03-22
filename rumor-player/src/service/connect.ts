@@ -2,7 +2,7 @@
 import SocketIo from 'socket.io-client';
 
 const RUMOR_SERVER_ENDPOINT = "http://localhost:3000";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiWXVyaSIsImlhdCI6MTYxNTYwMzU4MSwiZXhwIjoxNjE2MjA4MzgxfQ.x_3B7oy0VX_Wg305mwXcRLioIirKQudJTL7RdDEwNSQ";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiWXVyaSIsImlhdCI6MTYxNjM2OTE5MCwiZXhwIjoxNjE2OTczOTkwfQ.hklscCIya7clcy03a8gXQ_OVGxpOLKcmVHctws5sQAs";
 
 export interface ConnectResponse {
   socketClient: SocketIOClient.Socket,

@@ -32,6 +32,8 @@ export default class RenderScheduler {
       task.call(delta);
     }
 
+    this.lastTimestamp = timestamp;
+
     window.requestAnimationFrame(this.doRenderFrame);
   }
 
