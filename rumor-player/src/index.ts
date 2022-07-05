@@ -10,13 +10,46 @@ import RenderScheduler from '@/canvas/scheduler'
 import InputManager from '@/input/manager'
 import World from '@/canvas/world';
 
-const canvas = document.getElementById('game') as HTMLCanvasElement;
-canvas.width = window.rumor.canvasSize.w;
-canvas.height = window.rumor.canvasSize.h;
+
+import pixiApp from '@/app/pixi';
+
+import * as PIXI from 'pixi.js'
+import * as PIXIProjection from 'pixi-projection';
+
+import { TilesetTexture } from './canvas/gfx/tilesetTexture';
 
 async function main() {
   const map = await app.mapLoader.loadMap('1');
 
+  pixiApp.loader.add('world_png', '/assets/images/world.png').load((loader, resources) => {
+
+    let texture = resources.world_png.texture.baseTexture;
+
+    const tilesetTexture = new TilesetTexture(texture, window.rumor.tileSize);
+    const mapTexture = mapRenderer.renderMap(tilesetTexture)
+
+    const sprite = PIXI.Sprite.from(mapTexture);
+
+    const plane = new PIXIProjection.Sprite2d(sprite.texture)
+
+    // const plane = new PIXI.SimplePlane(mapTexture, [new PIXI.Point(50, 0), new PIXI.Point(20, 0)]);
+
+    // const sprite = PIXI.Sprite.from(tilesetTexture.tiles[100].ne);
+    // const sprite2 = PIXI.Sprite.from(tilesetTexture.tiles[100].nw);
+
+    // sprite.x = 10;
+    // sprite.y = 10;
+
+    // sprite2.x = 18;
+    // sprite2.y = 10;
+
+    pixiApp.stage.addChild(plane);
+
+
+  });
+  // '/assets/images/world.png')
+
+  /*
   World.getInstance().setMap(map);
   World.getInstance().start();
 
@@ -40,6 +73,7 @@ async function main() {
   }
 
   RenderScheduler.getInstance().start();
+  */
 
 }
 

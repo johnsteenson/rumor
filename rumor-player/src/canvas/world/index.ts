@@ -32,7 +32,7 @@ export default class World {
   }
 
   private renderLayers() {
-    this.layer[0] = mapRenderer.render(this.viewport, 0);
+    // this.layer[0] = mapRenderer.render(this.viewport, 0);
   }
 
   public start() {
@@ -46,7 +46,7 @@ export default class World {
 
     this.viewport = { l: 0, t: 0, r: 20, b: 15 }
 
-    await mapRenderer.loadMap(map);
+    // await mapRenderer.loadMap(map);
     this.renderLayers();
   }
 
