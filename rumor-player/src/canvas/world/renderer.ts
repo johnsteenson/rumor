@@ -1,5 +1,5 @@
 import * as Rumor from '@rumor/common';
-import { Dimension, Point, TileDrawRect, TileSize } from '@rumor/common';
+import { Dimension, Point, TileDrawRect, TileSize, unpackMapBuf } from '@rumor/common';
 import * as PIXI from 'pixi.js';
 
 import pixiApp from '@/app/pixi';
@@ -80,11 +80,15 @@ class MapRenderer {
     pixiApp.renderer.render(this.container, { renderTexture: this.mapTexture });
   }
 
-  public renderMap(tilesetTexture: TilesetTexture) {
+  public renderMap(map: Rumor.TileMap, tilesetTexture: TilesetTexture) {
     console.time('Rendering map')
+
+    /* TODO: Add new layers */
+
     const w = this.viewport.tile.r - this.viewport.tile.l;
     for (let y = this.viewport.tile.t; y < this.viewport.tile.b; y++) {
       for (let x = this.viewport.tile.l; x < this.viewport.tile.r; x++) {
+        const mapTile = unpackMapBuf(map.layer[0].visibleData[y * map.w + x]);
         const sprite = this.tileSprites[w * y + x];
         sprite.nw.texture = tilesetTexture.tiles[300].nw;
         sprite.ne.texture = tilesetTexture.tiles[300].ne;
@@ -242,3 +246,4 @@ class MapRenderer {
 // }
 
 export default new MapRenderer();
+

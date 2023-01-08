@@ -15,6 +15,7 @@ import pixiApp from '@/app/pixi';
 
 import * as PIXI from 'pixi.js'
 import * as PIXIProjection from 'pixi-projection';
+import { gsap } from 'gsap';
 
 import { TilesetTexture } from './canvas/gfx/tilesetTexture';
 
@@ -26,11 +27,29 @@ async function main() {
     let texture = resources.world_png.texture.baseTexture;
 
     const tilesetTexture = new TilesetTexture(texture, window.rumor.tileSize);
-    const mapTexture = mapRenderer.renderMap(tilesetTexture)
+    const mapTexture = mapRenderer.renderMap(map, tilesetTexture)
 
     const sprite = PIXI.Sprite.from(mapTexture);
+    const container = new PIXIProjection.Container2d();
 
     const plane = new PIXIProjection.Sprite2d(sprite.texture)
+    // plane.tint = 0xff0000;
+    // plane.width = pixiApp.screen.width;
+    // plane.height = pixiApp.screen.height;
+    // plane.proj.affine = PIXIProjection.AFFINE.AXIS_X;
+    // plane.anchor.set(0.5, 0.5);
+    // plane.position.set(-pixiApp.screen.width / 4, -pixiApp.screen.height / 4);
+
+    container.addChild(plane);
+
+    // container.proj.setAxisY({ x: 25, y: 450 }, 1);
+
+    // plane.rotation = -25;
+
+    // pixiApp.ticker.add((delta) => {
+    //   plane.x = plane.x + (delta * (16 / 1000));
+    // })
+
 
     // const plane = new PIXI.SimplePlane(mapTexture, [new PIXI.Point(50, 0), new PIXI.Point(20, 0)]);
 
@@ -43,7 +62,7 @@ async function main() {
     // sprite2.x = 18;
     // sprite2.y = 10;
 
-    pixiApp.stage.addChild(plane);
+    pixiApp.stage.addChild(container);
 
 
   });
