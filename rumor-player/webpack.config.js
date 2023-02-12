@@ -23,7 +23,10 @@ const config = {
 }
 
 module.exports = env => {
-  const envConfig = require(`./webpack/webpack.${env}.js`);
+  const envName = env.dev === true ? 'dev' : 'prod'
+  const envConfig = require(`./webpack/webpack.${envName}.js`);
 
-  return merge(config, envConfig);
+  console.log(envConfig)
+
+  return merge.merge(config, envConfig)
 };

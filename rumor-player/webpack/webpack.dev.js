@@ -8,18 +8,28 @@ module.exports = {
   devServer: {
     open: false,
     port: 8081,
-    contentBase: path.join(__dirname, '../assets'),
-    contentBasePublicPath: '/assets/'
+    static: [
+      {
+        directory: path.join(__dirname, '../assets'),
+        publicPath: '/assets'
+      }
+    ]
   },
   module: {
     rules: [
       {
         test: /\.ts?$/,
-        use: 'ts-loader',
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true
+          }
+        },
         exclude: /node_modules/
       },
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader
@@ -32,7 +42,7 @@ module.exports = {
             }
           }
         ]
-      }
+      },
     ],
   },
   plugins: [

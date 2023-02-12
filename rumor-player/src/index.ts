@@ -10,13 +10,68 @@ import RenderScheduler from '@/canvas/scheduler'
 import InputManager from '@/input/manager'
 import World from '@/canvas/world';
 
-const canvas = document.getElementById('game') as HTMLCanvasElement;
-canvas.width = window.rumor.canvasSize.w;
-canvas.height = window.rumor.canvasSize.h;
+
+import pixiApp from '@/app/pixi';
+
+import * as PIXI from 'pixi.js'
+// import * as PIXIProjection from 'pixi-projection';
+// import { gsap } from 'gsap';
+
+import { TilesetTexture } from './canvas/gfx/tilesetTexture';
 
 async function main() {
   const map = await app.mapLoader.loadMap('1');
 
+  PIXI.Assets.add('world_png', '/assets/images/world.png');
+
+  PIXI.Assets.load(['world_png']).then((resources) => {
+    let texture = resources.world_png.baseTexture;
+
+    const tilesetTexture = new TilesetTexture(texture, window.rumor.tileSize);
+    const mapTexture = mapRenderer.renderMap(map, tilesetTexture);
+
+    const sprite = PIXI.Sprite.from(mapTexture);
+    const container = new PIXI.Container();
+    // const tx = sprite.texture;
+    // const container = new PIXIProjection.Container2d();
+
+    // const plane = new PIXIProjection.Sprite2d(sprite.texture as any)
+    // plane.tint = 0xff0000;
+    // plane.width = pixiApp.screen.width;
+    // plane.height = pixiApp.screen.height;
+    // plane.proj.affine = PIXIProjection.AFFINE.AXIS_X;
+    // plane.anchor.set(0.5, 0.5);
+    // plane.position.set(-pixiApp.screen.width / 4, -pixiApp.screen.height / 4);
+
+    container.addChild(sprite);
+
+    // container.proj.setAxisY({ x: 25, y: 450 }, 1);
+
+    // plane.rotation = -25;
+
+    // pixiApp.ticker.add((delta) => {
+    //   plane.x = plane.x + (delta * (16 / 1000));
+    // })
+
+
+    // const plane = new PIXI.SimplePlane(mapTexture, [new PIXI.Point(50, 0), new PIXI.Point(20, 0)]);
+
+    // const sprite = PIXI.Sprite.from(tilesetTexture.tiles[100].ne);
+    // const sprite2 = PIXI.Sprite.from(tilesetTexture.tiles[100].nw);
+
+    // sprite.x = 10;
+    // sprite.y = 10;
+
+    // sprite2.x = 18;
+    // sprite2.y = 10;
+
+    pixiApp.stage.addChild(container);
+
+
+  });
+  // '/assets/images/world.png')
+
+  /*
   World.getInstance().setMap(map);
   World.getInstance().start();
 
@@ -40,6 +95,7 @@ async function main() {
   }
 
   RenderScheduler.getInstance().start();
+  */
 
 }
 
