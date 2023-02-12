@@ -13,7 +13,7 @@ import {
   TileMap,
   TileChange,
   TileChangeEntry,
-  TileDraw
+  TileDraw,
 } from "@rumor/common";
 
 import { namespace } from "vuex-class";
@@ -23,7 +23,7 @@ import {
   TilesetSection,
   Tile,
   TilesetView,
-  ToolView
+  ToolView,
 } from "@rumor/common";
 
 import * as resizeHandler from "@/lib/resizeHandler";
@@ -155,7 +155,7 @@ export default class MapBase extends CanvasBase {
       l: 0,
       r: this.map.w * this.tileSize.scaledW,
       t: 0,
-      b: this.map.h * this.tileSize.scaledH
+      b: this.map.h * this.tileSize.scaledH,
     });
   }
 
@@ -185,22 +185,22 @@ export default class MapBase extends CanvasBase {
 
     const widgetCenterCoor: Point = {
       x: (boundingRect.right - boundingRect.left) / 2,
-      y: (boundingRect.bottom - boundingRect.top) / 2
+      y: (boundingRect.bottom - boundingRect.top) / 2,
     };
 
     const mapCenterCoor: Point = {
       x: (this.map.w * this.tileSize.scaledW) / 2,
-      y: (this.map.h * this.tileSize.scaledH) / 2
+      y: (this.map.h * this.tileSize.scaledH) / 2,
     };
 
     const offset: Point = {
       x: widgetCenterCoor.x - mapCenterCoor.x,
-      y: widgetCenterCoor.y - mapCenterCoor.y
+      y: widgetCenterCoor.y - mapCenterCoor.y,
     };
 
     return {
       x: offset.x > 0 ? Math.floor(offset.x) : 0,
-      y: offset.y > 0 ? Math.floor(offset.y) : 0
+      y: offset.y > 0 ? Math.floor(offset.y) : 0,
     };
   }
 
@@ -211,7 +211,7 @@ export default class MapBase extends CanvasBase {
         (x - this.tileDrawRect.tile.l) * this.tileSize.scaledW,
       y:
         this.mapOffset.y +
-        (y - this.tileDrawRect.tile.t) * this.tileSize.scaledH
+        (y - this.tileDrawRect.tile.t) * this.tileSize.scaledH,
     };
   }
 
@@ -222,7 +222,7 @@ export default class MapBase extends CanvasBase {
         this.tileDrawRect.tile.l,
       y:
         Math.floor((y - this.mapOffset.y) / this.tileSize.scaledH) +
-        this.tileDrawRect.tile.t
+        this.tileDrawRect.tile.t,
     };
   }
 
@@ -239,7 +239,7 @@ export default class MapBase extends CanvasBase {
         (rect.r - this.tileDrawRect.tile.l) * this.tileSize.scaledW,
       b:
         this.mapOffset.y +
-        (rect.b - this.tileDrawRect.tile.t) * this.tileSize.scaledH
+        (rect.b - this.tileDrawRect.tile.t) * this.tileSize.scaledH,
     };
   }
 
@@ -248,7 +248,7 @@ export default class MapBase extends CanvasBase {
       l: Math.floor(this.scrollRect.innerL / this.tileSize.scaledW),
       r: Math.ceil(this.scrollRect.innerR / this.tileSize.scaledW),
       t: Math.floor(this.scrollRect.innerT / this.tileSize.scaledH),
-      b: Math.ceil(this.scrollRect.innerB / this.tileSize.scaledH)
+      b: Math.ceil(this.scrollRect.innerB / this.tileSize.scaledH),
     };
 
     if (rect.r > map.w) {
@@ -282,6 +282,7 @@ export default class MapBase extends CanvasBase {
             tile.t[k],
             quarter
           );
+          /* Shifting quarter bits to draw next quarter in sequence */
           quarter = quarter >> 4;
         }
       } else {

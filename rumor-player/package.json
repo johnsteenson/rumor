@@ -7,9 +7,8 @@
     "build": "webpack --env prod --mode production"
   },
   "dependencies": {
-    "gsap": "^3.10.4",
-    "pixi-projection": "^0.4.4",
-    "pixi.js": "^7.0.5",
+    "gsap": "^3.11.4",
+    "pixi.js": "^7.1.0",
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {

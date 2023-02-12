@@ -85,15 +85,41 @@ class MapRenderer {
 
     /* TODO: Add new layers */
 
+    const tileset = map.tileset;
+
+    // this.tileset.sections[sectionId].tiles[tileId]
+
     const w = this.viewport.tile.r - this.viewport.tile.l;
     for (let y = this.viewport.tile.t; y < this.viewport.tile.b; y++) {
       for (let x = this.viewport.tile.l; x < this.viewport.tile.r; x++) {
         const mapTile = unpackMapBuf(map.layer[0].visibleData[y * map.w + x]);
+        const sectionId = mapTile[0]; // const tile = this.tileset.sections[sectionId].tiles[tileId];
+        const tileId = mapTile[1];
+
+        const tile = tileset.sections[sectionId].tiles[tileId];
         const sprite = this.tileSprites[w * y + x];
-        sprite.nw.texture = tilesetTexture.tiles[300].nw;
-        sprite.ne.texture = tilesetTexture.tiles[300].ne;
-        sprite.sw.texture = tilesetTexture.tiles[300].sw;
-        sprite.se.texture = tilesetTexture.tiles[300].se;
+        // tile.
+
+        console.log(y, this.viewport.tile.b)
+        /* Check if tile is composed of different subtiles -- e.g. water/walls */
+        if (Array.isArray(tile.t)) {
+          const t = tile.t[0];
+          console.log(t)
+
+          sprite.nw.texture = tilesetTexture.tiles[t].nw;
+          sprite.ne.texture = tilesetTexture.tiles[t].ne;
+          sprite.sw.texture = tilesetTexture.tiles[t].sw;
+          sprite.se.texture = tilesetTexture.tiles[t].se;
+        } else {
+          const t = tile.t;
+          console.log(t)
+
+          sprite.nw.texture = tilesetTexture.tiles[t].nw;
+          sprite.ne.texture = tilesetTexture.tiles[t].ne;
+          sprite.sw.texture = tilesetTexture.tiles[t].sw;
+          sprite.se.texture = tilesetTexture.tiles[t].se;
+
+        }
       }
     }
 
@@ -114,7 +140,6 @@ class MapRenderer {
 
   /* Create sprites to contain all available tiles */
 }
-
 
 // const LAYERS = 2;
 
