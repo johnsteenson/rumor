@@ -3,7 +3,6 @@ import { getters } from './getters';
 import { actions } from './actions';
 import { mutations } from './mutations';
 import { WorldState } from './types';
-import { RootState } from '../types';
 import { ToolType } from '@rumor/common';
 
 const namespaced: boolean = true,
@@ -21,7 +20,7 @@ const namespaced: boolean = true,
     changes: [],
   };
 
-export const worldModule: Module<WorldState, RootState> = {
+export const worldModule = {
   namespaced,
   state,
   getters,

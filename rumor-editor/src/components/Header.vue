@@ -8,31 +8,26 @@
     </div>
     <div class="spacer"></div>
     <div class="header-section">
-      <account-icon />
-      {{signedInUser}}
+      <component :is="AccountIcon" />
+      {{ signedInUser }}
     </div>
     <div class="header-end"></div>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+<script lang="ts" setup>
 
 import AccountIcon from "vue-material-design-icons/Account.vue";
 
-const project = namespace("project");
+// const project = namespace("project");
 
-@Component({
-  components: {
-    AccountIcon
-  }
-})
-export default class Header extends Vue {
-  @project.State("offline") isOffline!: boolean;
+const isOffline = true;
+const signedInUser = "me"
 
-  @project.State("signedInUser") signedInUser!: string;
-}
+// TODO link project state
+  // @project.State("offline") isOffline!: boolean;
+
+  // @project.State("signedInUser") signedInUser!: string;
 </script>
 
 <style scoped>

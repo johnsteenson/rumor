@@ -5,9 +5,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+<script lang="ts" setup>
+import { namespace } from "s-vuex-class";
 import {
   TilesetView,
   Tileset,
@@ -23,60 +22,61 @@ const world = namespace("world");
 
 const TILE_DEBUG = 0;
 
-@Component
-export default class TileDebug extends TilesetBase {
-  public draw() {
-    if (!this.tilesetView || !this.image) {
-      return;
-    }
+/* TODO - Implement later.  This is a debug tool I used for autotile that I may no longer need */
 
-    const tileset: Tileset = this.tilesetView.tileset,
-      tileSize: TileSize = this.tilesetView.tileSize,
-      section: TilesetSection = this.section,
-      halfW: number = tileSize.scaledW / 2,
-      halfH: number = tileSize.scaledH / 2;
+// @Component
+// export default class TileDebug extends TilesetBase {
+//   public draw() {
+//     if (!this.tilesetView || !this.image) {
+//       return;
+//     }
 
-    let sx: number = 0,
-      sy: number = 0,
-      i = 0,
-      k = 0,
-      templateTile: TemplateTile = section.templateTiles[TILE_DEBUG],
-      tiles: number[] = templateTile.tile as number[],
-      tileIndex: number,
-      imgTileIndex: number,
-      tile: Tile;
+//     const tileset: Tileset = this.tilesetView.tileset,
+//       tileSize: TileSize = this.tilesetView.tileSize,
+//       section: TilesetSection = this.section,
+//       halfW: number = tileSize.scaledW / 2,
+//       halfH: number = tileSize.scaledH / 2;
 
-    this.context.fillStyle = "#ffffff";
-    this.context.font = "16px serif";
+//     let sx: number = 0,
+//       sy: number = 0,
+//       i = 0,
+//       k = 0,
+//       templateTile: TemplateTile = section.templateTiles[TILE_DEBUG],
+//       tiles: number[] = templateTile.tile as number[],
+//       tileIndex: number,
+//       imgTileIndex: number,
+//       tile: Tile;
 
-    for (i = 0; i < tiles.length; i++) {
-      const tile: Tile = section.tiles[tiles[i]];
-      const subTiles: number[] = tile.t as number[];
+//     this.context.fillStyle = "#ffffff";
+//     this.context.font = "16px serif";
 
-      if (i > 0 && i % 12 == 0) {
-        sy += tileSize.scaledH;
-        sx = 0;
-      }
+//     for (i = 0; i < tiles.length; i++) {
+//       const tile: Tile = section.tiles[tiles[i]];
+//       const subTiles: number[] = tile.t as number[];
 
-      if (Array.isArray(tile.t)) {
-        const len: number = tile.flen || subTiles.length;
-        let quarter: number = tile.quarter || 255;
+//       if (i > 0 && i % 12 == 0) {
+//         sy += tileSize.scaledH;
+//         sx = 0;
+//       }
 
-        for (k = 0; k < len; k++) {
-          this.image!.drawSubTiles(this.context, sx, sy, subTiles[k], quarter);
-          quarter = quarter >> 4;
-        }
-      } else {
-        this.image!.drawTile(this.context, sx, sy, tile.t as number);
-      }
+//       if (Array.isArray(tile.t)) {
+//         const len: number = tile.flen || subTiles.length;
+//         let quarter: number = tile.quarter || 255;
 
-      this.context.fillText(`${i}`, sx + halfW - 6, sy + halfH + 6);
+//         for (k = 0; k < len; k++) {
+//           this.image!.drawSubTiles(this.context, sx, sy, subTiles[k], quarter);
+//           quarter = quarter >> 4;
+//         }
+//       } else {
+//         this.image!.drawTile(this.context, sx, sy, tile.t as number);
+//       }
 
-      sx += tileSize.scaledW;
-    }
-  }
-}
+//       this.context.fillText(`${i}`, sx + halfW - 6, sy + halfH + 6);
+
+//       sx += tileSize.scaledW;
+//     }
+//   }
+// }
 </script>
 
-<style>
-</style>
+<style></style>

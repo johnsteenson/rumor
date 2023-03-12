@@ -1,11 +1,10 @@
 <template>
-  <Modal title="Warning" :show="show" @closed="closed">{{message}}</Modal>
+  <Modal title="Warning" :show="show" @closed="closed">{{ message }}</Modal>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script lang="ts" setup>
 import Modal from "@/components/ui/Modal.vue";
-import { namespace } from "vuex-class";
+import { ref } from "vue";
 
 const MOBILE_NOT_SUPPORTED = `This application currently does not support mobile devices,
 but we are hoping to in the future.  You are welcome to continue but we don't guarantee
@@ -31,31 +30,22 @@ function browserNotSupported() {
   document.body.innerHTML = BROWSER_NOT_SUPPORTED;
 }
 
-@Component({
-  components: {
-    Modal
-  }
-})
-export default class BrowserCheck extends Vue {
-  message: string = "";
-  show: boolean = false;
+const message = ref("");
+const show = ref(false);
 
-  private created() {
-    if (window.innerWidth < 640 || window.innerHeight < 480) {
-      this.message = MOBILE_NOT_SUPPORTED;
-      this.show = true;
-    }
-
-    if (!window.PointerEvent) {
-      browserNotSupported();
-    }
-  }
-
-  public closed() {
-    this.show = false;
-  }
+if (window.innerWidth < 640 || window.innerHeight < 480) {
+  message.value = MOBILE_NOT_SUPPORTED;
+  show.value = true;
 }
+
+if (!window.PointerEvent) {
+  browserNotSupported();
+}
+
+function closed() {
+  show.value = false;
+}
+
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

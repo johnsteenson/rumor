@@ -8,18 +8,12 @@
         </p>
         <p>
           <b>Note:</b> This app is currently supported for
-          <a
-            href="https://www.mozilla.org/"
-            target="_blank"
-          >Mozilla Firefox</a>
+          <a href="https://www.mozilla.org/" target="_blank">Mozilla Firefox</a>
           and
           <a href="https://www.google.com/chrome/" target="_blank">Google Chrome</a>.
           We cannot guarantee this will work with any other browser at this time.
           If it doesn't work, please download
-          <a
-            href="https://www.mozilla.org/"
-            target="_blank"
-          >Firefox</a>
+          <a href="https://www.mozilla.org/" target="_blank">Firefox</a>
           or
           <a href="https://www.google.com/chrome/" target="_blank">Chrome</a>.
         </p>
@@ -34,7 +28,7 @@
         </ul>
         <p>
           This app was last updated on
-          <b>{{buildDate}}</b>
+          <b>{{ buildDate }}</b>
         </p>
       </Card>
     </div>
@@ -46,10 +40,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
 import Card from "@/components/ui/Card.vue";
 import Links from "@/components/home/Links.vue";
 import SideBar from "@/components/home/SideBar.vue";
+import { defineComponent } from "vue";
 
 declare var process: {
   env: {
@@ -57,16 +51,20 @@ declare var process: {
   };
 };
 
-@Component({
+const buildDate = process.env.BUILD_DATE;
+
+export default defineComponent({
   components: {
     Card,
-    Links,
-    SideBar
+    Links
+  },
+  setup() {
+    return {
+      buildDate: process.env.BUILD_DATE
+    }
   }
-})
-export default class Home extends Vue {
-  private buildDate: String = process.env.BUILD_DATE;
-}
+});
+
 </script>
 
 <style>

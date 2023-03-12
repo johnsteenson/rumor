@@ -1,19 +1,23 @@
-import Vue from 'vue';
-import Vuex, { StoreOptions } from 'vuex';
-import { projectModule } from './project/index';
-import { worldModule } from './world/index';
-import { RootState } from './types';
+import { InjectionKey } from 'vue';
+import { createStore, Store, StoreOptions, useStore as baseUseStore } from 'vuex';
+import { ProjectState, projectModule } from './project';
+import { worldModule } from './world';
 
 import { createPlugin } from './plugin';
 
-Vue.use(Vuex);
+interface RootState {
+  version: string;
+  project: ProjectState
+}
 
-const state: RootState = {
-  version: '1.0.0',
+const state = {
+  version: '1.0.0'
 };
 
-const storeOptions: StoreOptions<RootState> = {
-  state,
+export const storeKey: InjectionKey<Store<RootState>> = Symbol();
+
+export const store = createStore<RootState>({
+  state: state as RootState,
   modules: {
     project: projectModule,
     world: worldModule,
@@ -21,6 +25,8 @@ const storeOptions: StoreOptions<RootState> = {
   plugins: [
     createPlugin()
   ]
-};
+});
 
-export default new Vuex.Store<RootState>(storeOptions);
+export const useStore = () => {
+  return baseUseStore(storeKey);
+}

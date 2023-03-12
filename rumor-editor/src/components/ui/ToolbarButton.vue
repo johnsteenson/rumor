@@ -1,12 +1,10 @@
 <template>
-  <div :class="[classSet, 'toolbar-bg']" @pointerdown="selected" @pointerup="released">
+  <div :class="[getClassSet(), 'toolbar-bg']" @pointerdown="selected" @pointerup="released">
     <component :is="item.icon" />
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+<script lang="ts" setup>
 
 import { ToolbarItem } from "./ToolbarGroup.vue";
 
@@ -17,48 +15,49 @@ import Numeric1BoxMultiple from "vue-material-design-icons/Numeric1BoxMultiple.v
 import Numeric2BoxMultiple from "vue-material-design-icons/Numeric2BoxMultiple.vue";
 import ShapeRectanglePlus from "vue-material-design-icons/ShapeRectanglePlus.vue";
 import Undo from "vue-material-design-icons/Undo.vue";
+import { PropType } from "vue";
 
-@Component({
-  components: {
-    BrushIcon,
-    FormatColorFillIcon,
-    Numeric1BoxMultiple,
-    Numeric2BoxMultiple,
-    ShapeRectanglePlus,
-    Undo
+const props = defineProps({
+  item: {
+    type: Object as PropType<ToolbarItem>,
+    required: true
+  },
+  pressed: Boolean,
+  type: {
+    type: String,
+    default: "button"
   }
-})
-export default class ToolbarButton extends Vue {
-  @Prop() item!: ToolbarItem;
-  @Prop() pressed!: boolean;
-  @Prop({ default: "button" }) type!: String;
+});
 
-  get classSet(): any {
-    switch (this.type) {
-      case "tab":
-        return {
-          "toolbar-tab": true,
-          "toolbar-tab-pressed": this.pressed
-        };
-        break;
+const emit = defineEmits(['selected', 'released'])
 
-      default:
-        return {
-          "toolbar-button": true,
-          "toolbar-button-pressed": this.pressed
-        };
-        break;
-    }
-  }
+function getClassSet() {
+  switch (props.type) {
+    case "tab":
+      return {
+        "toolbar-tab": true,
+        "toolbar-tab-pressed": props.pressed
+      };
+      break;
 
-  public selected() {
-    this.$emit("selected", this.item);
-  }
-
-  public released() {
-    this.$emit("released", this.item);
+    default:
+      return {
+        "toolbar-button": true,
+        "toolbar-button-pressed": props.pressed
+      };
+      break;
   }
 }
+
+
+function selected() {
+  emit("selected", props.item);
+}
+
+function released() {
+  emit("released", props.item);
+}
+
 </script>
 
 <style scoped>

@@ -1,90 +1,76 @@
 <template>
   <ul>
     <li v-for="item in items" :key="item.id">
-      <span
-        class="expander-icon"
-        @click="expand(item, $event)"
-        v-if="item.children && item.children.length > 0"
-      >
+      <span class="expander-icon" @click="expand(item, $event)" v-if="item.children && item.children.length > 0">
         <plus v-if="treeState.collapsed[item.id]" />
         <minus @click="expand(item, $event)" v-else />
       </span>
 
-      <span
-        @click="select(item, $event)"
-        @dblclick="expand(item, $event)"
-        @contextmenu="contextMenu(item, $event)"
-        :class="{ 'tree-selected': selectedId === item.id }"
-      >
+      <span @click="select(item, $event)" @dblclick="expand(item, $event)" @contextmenu="contextMenu(item, $event)"
+        :class="{ 'tree-selected': selectedId === item.id }">
         <component :is="item.icon" v-if="item.icon" />
         {{ item.label }}
       </span>
-      <TreeNode
-        v-show="!treeState.collapsed[item.id]"
-        :items="item.children"
-        :treeState="treeState"
-        :selectedId="selectedId"
-        @treeItemSelected="treeItemSelected"
-      ></TreeNode>
+      <TreeNode v-show="!treeState.collapsed[item.id]" :items="item.children" :treeState="treeState"
+        :selectedId="selectedId" @treeItemSelected="treeItemSelected"></TreeNode>
     </li>
   </ul>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+<script lang="ts" setup>
+// import PlusBoxMultipleOutline from "vue-material-design-icons/PlusBoxMultipleOutline.vue";
+// import MinusBoxMultipleOutline from "vue-material-design-icons/MinusBoxMultipleOutline.vue";
 
-import PlusBoxMultipleOutline from "vue-material-design-icons/PlusBoxMultipleOutline.vue";
-import MinusBoxMultipleOutline from "vue-material-design-icons/MinusBoxMultipleOutline.vue";
-
-import FileDocumentBoxOutline from "vue-material-design-icons/FileDocumentOutline.vue";
-import FolderOutline from "vue-material-design-icons/FolderOutline.vue";
+// import FileDocumentBoxOutline from "vue-material-design-icons/FileDocumentOutline.vue";
+// import FolderOutline from "vue-material-design-icons/FolderOutline.vue";
 
 import { TreeItem, TreeState } from "@/lib/ui/tree";
+import { PropType } from "vue";
 
-@Component({
-  name: "TreeNode",
-  components: {
-    plus: PlusBoxMultipleOutline,
-    minus: MinusBoxMultipleOutline,
-    file: FileDocumentBoxOutline,
-    folder: FolderOutline,
+const props = defineProps({
+  items: {
+    type: Object as PropType<TreeItem[] | undefined>,
+    required: true
   },
-})
-export default class TreeNode extends Vue {
-  @Prop() private items!: TreeItem[];
+  treeState: {
+    type: Object as PropType<TreeState>,
+    required: true
+  },
+  selectedId: {
+    type: String
+  }
+});
 
-  @Prop() private treeState!: TreeState;
+const emit = defineEmits(['treeItemSelected']);
 
-  @Prop() private selectedId!: string;
+function select(item: TreeItem, $event: MouseEvent) {
+  $event.preventDefault();
+  $event.stopImmediatePropagation();
 
-  public select(item: TreeItem, $event: MouseEvent) {
-    $event.preventDefault();
-    $event.stopImmediatePropagation();
-
-    if (item.disableSelect) {
-      return;
-    }
-
-    this.$emit("treeItemSelected", item);
+  if (item.disableSelect) {
+    return;
   }
 
-  public treeItemSelected(item: TreeItem) {
-    this.$emit("treeItemSelected", item);
-  }
-
-  public expand(item: TreeItem, $event: MouseEvent) {
-    $event.preventDefault();
-    $event.stopImmediatePropagation();
-
-    this.$set(
-      this.treeState.collapsed,
-      item.id,
-      !this.treeState.collapsed[item.id]
-    );
-  }
-
-  public contextMenu(item: TreeItem, $event: MouseEvent) {}
+  emit("treeItemSelected", item);
 }
+
+function treeItemSelected(item: TreeItem) {
+  emit("treeItemSelected", item);
+}
+
+function expand(item: TreeItem, $event: MouseEvent) {
+  $event.preventDefault();
+  $event.stopImmediatePropagation();
+
+  // TODO Fix state
+  // this.$set(
+  //   this.treeState.collapsed,
+  //   item.id,
+  //   !this.treeState.collapsed[item.id]
+  // );
+}
+
+function contextMenu(item: TreeItem, $event: MouseEvent) { }
 
 /*
 export default {
@@ -146,9 +132,12 @@ li {
 span {
   white-space: nowrap;
   cursor: pointer;
-  -webkit-user-select: none; /* Chrome/Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE10+ */
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+ */
 }
 
 .expander-icon {

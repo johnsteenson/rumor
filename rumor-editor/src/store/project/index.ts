@@ -2,10 +2,15 @@ import { Module } from 'vuex';
 import { getters } from './getters';
 import { actions } from './actions';
 import { mutations } from './mutations';
-import { ProjectState } from './types';
-import { RootState } from '../types';
+import { Dimension } from '@rumor/common';
 
-const namespaced: boolean = true;
+export interface ProjectState {
+  title: string;
+  offline: boolean,
+  loggedIn: boolean,
+  defaultTileSize: Dimension;
+  signedInUser: string;
+}
 
 const state: ProjectState = {
   title: 'My Kewl Project',
@@ -18,10 +23,11 @@ const state: ProjectState = {
   signedInUser: ""
 };
 
-export const projectModule: Module<ProjectState, RootState> = {
-  namespaced,
-  state,
+export const projectModule = {
+  namespaced: true,
+  state: (): ProjectState => (state),
   getters,
   actions,
-  mutations,
-};
+  mutations
+}
+

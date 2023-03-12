@@ -1,4 +1,5 @@
 import { RumorService } from "@/service/rumor/interface";
+import * as SocketIO from 'socket.io-client';
 
 import { createLayers } from "@/lib/world/tilemap";
 import { TileMap, TileChange, TileChangeEntry, TileMapTree } from '@rumor/common';
@@ -7,7 +8,7 @@ import { Tileset } from '@rumor/common';
 import { serializeChanges, deserializeChanges } from './serialize';
 import { connectSocket, ConnectResponse } from './connect';
 
-import store from '@/store';
+// import store from '@/store';
 
 import tileset from "@/data/tileset-world.json";
 import { Store } from 'vuex';
@@ -16,7 +17,7 @@ export class RumorServiceIo extends RumorService {
 
   private store!: Store<any>;
 
-  private socketClient!: SocketIOClient.Socket;
+  private socketClient!: SocketIO.Socket;
 
   constructor() {
     super();

@@ -1,6 +1,5 @@
 import { GetterTree } from 'vuex';
 import { WorldState } from './types';
-import { RootState } from '../types';
 
 import { Tileset, TilesetView, ToolView } from '@rumor/common';
 import { TileSize } from '@rumor/common';
@@ -9,7 +8,7 @@ import { MapView, ToolType } from '@rumor/common';
 
 import { mapStore } from '@/world';
 
-export const getters: GetterTree<WorldState, RootState> = {
+export const getters = {
 
   getTilesetView(state: WorldState): Nullable<TilesetView> {
     const { w, h } = mapStore.map.tileset.tileSize,

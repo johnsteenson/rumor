@@ -5,12 +5,8 @@
         <TileToolbar />
       </div>
       <div class="world-tile-selector">
-        <TilePalette
-          :tilesetView="tilesetView"
-          :toolView="toolView"
-          :hideHScroll="true"
-          @tileSelected="tileSelected"
-        ></TilePalette>
+        <TilePalette :tilesetView="tilesetView" :toolView="toolView" :hideHScroll="true" @tileSelected="tileSelected">
+        </TilePalette>
       </div>
 
       <div class="world-map-selector">
@@ -18,18 +14,14 @@
       </div>
 
       <div class="world-map-editor">
-        <MapEditor
-          :useMapStore="true"
-          :toolView="toolView"
-          :tilesetView="tilesetView"
-          @tileSelected="tileSelected"
-        ></MapEditor>
+        <MapEditor :useMapStore="true" :toolView="toolView" :tilesetView="tilesetView" @tileSelected="tileSelected">
+        </MapEditor>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 /*
     <div style="width: 100%; height: 600px; overflow: scroll">
       <TileDebug :tilesetView="tilesetView" :disableCanvasResize="true">
@@ -37,8 +29,6 @@
     </div>         
 */
 
-import { Component, Prop, Vue, Provide } from "vue-property-decorator";
-import { Getter, namespace } from "vuex-class";
 import MapEditor from "@/components/world/MapEditor.vue";
 import TilePalette from "@/components/world/TilePalette.vue";
 import TileDebug from "@/components/world/TileDebug.vue";
@@ -54,44 +44,35 @@ import { getServiceInterface } from "@/service/rumor";
 import tileset from "@/data/tileset-world.json";
 import { RumorService } from "@/service/rumor/interface";
 import { RumorServiceLocal } from "@/service/rumor/local";
+import { computed, onMounted, ref } from "vue";
+import { useStore } from "@/store";
 
-const world = namespace("world"),
-  project = namespace("project");
+const mapLoaded = ref(false);
 
-@Component({
-  components: {
-    MapEditor,
-    MapTree,
-    TilePalette,
-    TileDebug,
-    TileToolbar
-  }
-})
-export default class World extends Vue {
-  private mapLoaded: boolean = false;
+const store = useStore();
 
-  @world.Getter("getTilesetView") tilesetView!: TilesetView;
+const tilesetView = computed(() => store.getters['world/getTilesetView']);
+const toolView = computed(() => store.getters['world/getToolView']);
 
-  @world.Getter("getToolView") toolView!: ToolView;
+// @world.Mutation("selectTileIndices") selectTileIndices: any;
 
-  @world.Mutation("selectTileIndices") selectTileIndices: any;
+// @Provide("mapStore") store = mapStore;
 
-  @Provide("mapStore") store = mapStore;
+onMounted(() => {
+  const service = getServiceInterface();
 
-  private mounted() {
-    const service = getServiceInterface();
+  service.getMap("1").then((tileMap: TileMap) => {
+    mapStore.map = tileMap;
 
-    service.getMap("1").then((tileMap: TileMap) => {
-      mapStore.map = tileMap;
+    mapLoaded.value = true;
+  });
+});
 
-      this.mapLoaded = true;
-    });
-  }
-
-  tileSelected(selectedTileIndices: TileSelection) {
-    this.selectTileIndices(selectedTileIndices);
-  }
+function tileSelected(selectedTileIndices: TileSelection) {
+  // TODO Link state
+  // this.selectTileIndices(selectedTileIndices);
 }
+
 </script>
 
 <style scoped>

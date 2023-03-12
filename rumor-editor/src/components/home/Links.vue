@@ -7,30 +7,18 @@
       </li>
       <li>
         <GithubIcon />
-        <a href="https://github.com/johnsteenson/rumor-web" target="_blank"
-          >rumor-web</a
-        >
+        <a href="https://github.com/johnsteenson/rumor-web" target="_blank">rumor-web</a>
       </li>
     </ul>
   </Card>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script lang="ts" setup>
 import Card from "@/components/ui/Card.vue";
-import { namespace } from "vuex-class";
 
-import GithubIcon from "vue-material-design-icons/Github.vue";
-import EarthIcon from "vue-material-design-icons/Earth.vue";
+// import GithubIcon from "vue-material-design-icons/Github.vue";
+// import EarthIcon from "vue-material-design-icons/Earth.vue";
 
-@Component({
-  components: {
-    Card,
-    GithubIcon,
-    EarthIcon,
-  },
-})
-export default class UpdateList extends Vue {}
 </script>
 
 <style scoped>
