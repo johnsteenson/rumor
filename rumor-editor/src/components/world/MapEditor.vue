@@ -1,5 +1,5 @@
 <template>
-  <div class="map-base">
+  <div class="map-base" ref="containerRef">
     <CanvasScrollport :scrollRect="baseCanvas.scrollRect" :size="baseCanvas.containerArea"
       :hideHScroll="baseCanvas.hideHScroll" :hideVScroll="baseCanvas.hideVScroll" @update="baseCanvas.updateScrollRect">
       <canvas ref="canvasRef" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerUp"
@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, PropType } from 'vue';
+import { ref, onMounted, PropType, nextTick } from 'vue';
 import { TileSize, Rect, Point, ToolView, TileMap, TilesetView } from "@rumor/common";
 import {
   isRectEqual,
@@ -63,11 +63,12 @@ const props = defineProps({
   useMapStore: Boolean
 })
 
-let canvasRef = ref<HTMLCanvasElement | null>(null);
+const canvasRef = ref<HTMLCanvasElement | null>(null);
+const containerRef = ref<HTMLElement | null>(null);
 let canvas: HTMLCanvasElement;
 let context: CanvasRenderingContext2D;
 
-const baseCanvas = useBaseCanvas({ hideHScroll: false, hideVScroll: false }, canvasRef);
+const baseCanvas = useBaseCanvas({ hideHScroll: false, hideVScroll: false, onResize }, containerRef, canvasRef);
 const mapCanvas = useMapCanvas({
   tilesetView: props.tilesetView,
   toolView: props.toolView,
@@ -103,6 +104,13 @@ onMounted(() => {
   //   )[0] as HTMLCanvasElement;
   //   this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 })
+
+function onResize() {
+  nextTick(() => {
+    mapCanvas.updateCoordinates();
+    mapCanvas.drawMap();
+  });
+}
 
 function applyDraw(tileDraw: TileDraw) {
   switch (props.toolView.tool) {

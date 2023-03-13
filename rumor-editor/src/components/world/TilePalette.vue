@@ -1,5 +1,5 @@
 <template>
-  <div class="tile-palette" @wheel="onWheel">
+  <div ref="containerRef" class="tile-palette" @wheel="onWheel">
     <CanvasScrollport :scrollRect="baseCanvas.scrollRect" :size="baseCanvas.containerArea"
       :hideHScroll="baseCanvas.hideHScroll" :hideVScroll="baseCanvas.hideVScroll" @update="baseCanvas.updateScrollRect">
       <canvas ref="canvasRef" class="drawable" @pointerdown="pointerDown" @pointermove="pointerMove"
@@ -22,10 +22,11 @@ import { nextTick, onMounted, PropType, ref, watch } from "vue";
 import { useBaseCanvas } from "@/canvas/useBaseCanvas";
 import { useTilesetCanvas } from "@/canvas/useTilesetCanvas";
 
-
 const WHEEL_SCROLL_SPEED = 70;
 
-let canvasRef = ref<HTMLCanvasElement | null>(null);
+const containerRef = ref<HTMLElement | null>(null);
+const canvasRef = ref<HTMLCanvasElement | null>(null);
+
 let canvas: HTMLCanvasElement;
 let context: CanvasRenderingContext2D;
 
@@ -44,7 +45,7 @@ const props = defineProps({
   }
 });
 
-const baseCanvas = useBaseCanvas({}, canvasRef);
+const baseCanvas = useBaseCanvas({ hideHScroll: true, hideVScroll: false, onResize }, containerRef, canvasRef);
 const tilesetCanvas = useTilesetCanvas({
   tilesetView: props.tilesetView
 }, baseCanvas);
@@ -64,6 +65,10 @@ onMounted(() => {
   context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 });
+
+function onResize() {
+  tilesetCanvas.draw();
+}
 
 // TODO Check if should bind
 //   public mounted() {

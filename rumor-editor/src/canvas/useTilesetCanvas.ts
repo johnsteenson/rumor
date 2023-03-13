@@ -82,6 +82,16 @@ export function useTilesetCanvas(props: any, baseCanvas: BaseCanvas) {
           ) * view.tileSize.scaledH
       });
 
+      console.log('NEW VIEWPORT', {
+        l: 0,
+        t: 0,
+        r: view.tileSize.scaledW * section.tilesPerRow,
+        b:
+          Math.ceil(
+            section.templateTiles.length / section.tilesPerRow
+          ) * view.tileSize.scaledH
+      })
+
       baseCanvas.forceResizeEvent();
     }
 
@@ -163,10 +173,6 @@ export function useTilesetCanvas(props: any, baseCanvas: BaseCanvas) {
       sx = sx + tileSize.scaledW;
       k++;
     }
-  }
-
-  function onResize() {
-    drawTiles();
   }
 
   function draw() {

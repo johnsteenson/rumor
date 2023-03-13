@@ -141,13 +141,6 @@ export function useMapCanvas(props: any, mapStore: MapStore, baseCanvas: BaseCan
     tileDrawRect = calculateTileDrawRect(map, tileSize);
   }
 
-  function onResize() {
-    nextTick(() => {
-      updateCoordinates();
-      drawMap();
-    });
-  }
-
   function refreshViewport() {
     if (!baseCanvas.canvasRef.value || !map || !tileset || !tileSize) {
       return;
@@ -401,7 +394,8 @@ export function useMapCanvas(props: any, mapStore: MapStore, baseCanvas: BaseCan
     redrawRect,
     drawTile,
     drawTiles,
-    drawMap
+    drawMap,
+    updateCoordinates
   }
 }
 

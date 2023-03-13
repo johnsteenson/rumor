@@ -20,7 +20,7 @@ import {
   getDownArrow,
   getMouseCoor
 } from "@/canvas/utils";
-import { onMounted, Ref, ref } from "vue";
+import { nextTick, onMounted, Ref, ref, watch } from "vue";
 import { PropType } from "vue";
 
 const SCROLLBAR_WIDTH = 16;
@@ -179,6 +179,29 @@ function scrollTo(axis: Axis, val: number) {
 //     this.draw();
 //   });
 // }
+
+watch(() => props.scrollRect,
+  () => {
+    nextTick(() => {
+      draw();
+    });
+  },
+  { immediate: true, deep: true });
+
+
+watch(() => props.size,
+  (size) => {
+    nextTick(() => {
+      console.log('NEW SIZE', size)
+      if (!props.hideHScroll) {
+        hCanvasRef.value!.width = size!.w + SCROLLBAR_WIDTH;
+      }
+      if (!props.hideVScroll) {
+        vCanvasRef.value!.height = size!.h;
+      }
+    });
+  },
+  { immediate: true });
 
 function drawVertical() {
   if (!vCanvasRef.value) {

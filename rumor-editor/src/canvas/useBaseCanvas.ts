@@ -11,28 +11,24 @@ import {
   getUpArrow,
   getDownArrow
 } from "@/canvas/utils";
-import { Ref } from "vue";
+import { reactive, Ref, watch } from "vue";
 
 const SCROLLBAR_WIDTH = 16;
 const SCROLLBAR_OFFSET = 8;
 
 
-export function useBaseCanvas(props: any, canvasRef: Ref<HTMLCanvasElement | null>) {
-
-  // const context: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-  // Protected
+export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>, canvasRef: Ref<HTMLCanvasElement | null>) {
   let drawArea: Dimension = {
     w: 0,
     h: 0
   }
 
-  let containerArea: Dimension = {
+  let containerArea: Dimension = reactive({
     w: 0,
     h: 0
-  }
+  });
 
-  let scrollRect: ScrollRect = {
+  let scrollRect: ScrollRect = reactive({
     innerL: 0,
     innerR: 0,
     outerL: 0,
@@ -41,7 +37,7 @@ export function useBaseCanvas(props: any, canvasRef: Ref<HTMLCanvasElement | nul
     outerT: 0,
     innerB: 0,
     outerB: 0
-  };
+  });
 
   // Private
   const scrollbarWidth = SCROLLBAR_WIDTH;
@@ -55,6 +51,24 @@ export function useBaseCanvas(props: any, canvasRef: Ref<HTMLCanvasElement | nul
   // const hideHScroll = false;
   // const hideVScroll = false;
 
+  // Setup resize handler
+
+  watch(containerRef, (container) => {
+    console.log(container)
+    if (container) {
+      resizeHandler.add(container, doResize);
+    }
+  }, { immediate: false, deep: false });
+
+  //   this.$nextTick(() => {
+  //     this.doResize.call(
+  //       this,
+  //       this.$el,
+  //       this.$el.getBoundingClientRect() as DOMRect
+  //     );
+  //     /// this.$forceUpdate();
+  //   });
+
 
   function setMaxDrawArea(w: number, h: number) {
     maxDrawArea.w = w;
@@ -62,11 +76,13 @@ export function useBaseCanvas(props: any, canvasRef: Ref<HTMLCanvasElement | nul
   }
 
   function forceResizeEvent() {
-    if (!canvasRef.value) {
+    if (!canvasRef.value || !containerRef.value) {
       return;
     }
 
-    const el = canvasRef.value,
+    console.log('FORCE RESIZE')
+
+    const el = containerRef.value,
       compStyles = window.getComputedStyle(el),
       boundingRect = el.getBoundingClientRect(),
       borderXOffset =
@@ -76,7 +92,14 @@ export function useBaseCanvas(props: any, canvasRef: Ref<HTMLCanvasElement | nul
         parseFloat(compStyles.getPropertyValue("border-top-width")) +
         parseFloat(compStyles.getPropertyValue("border-bottom-width"));
 
-    doResize(canvasRef.value, {
+    console.log('must resize', {
+      x: boundingRect.left,
+      y: boundingRect.top,
+      width: boundingRect.width - borderXOffset,
+      height: boundingRect.height - borderYOffset
+    })
+
+    doResize(el, {
       x: boundingRect.left,
       y: boundingRect.top,
       width: boundingRect.width - borderXOffset,
@@ -95,29 +118,48 @@ export function useBaseCanvas(props: any, canvasRef: Ref<HTMLCanvasElement | nul
       w = Math.floor(rect.width) - vScrollOffset,
       h = Math.floor(rect.height) - hScrollOffset;
 
+    console.log('RESIZE', rect)
+
     if (rect.width > maxDrawArea.w) {
-      canvas.width = maxDrawArea.w;
-      canvas.height = h * (canvas.width / canvas.clientWidth);
+      drawArea.w = maxDrawArea.w;
+      drawArea.h = Math.floor(h * (canvas.width / canvas.clientWidth));
     } else {
-      canvas.width = Math.floor(w);
-      canvas.height = Math.floor(h);
+      drawArea.w = Math.floor(w);
+      drawArea.h = Math.floor(h);
     }
 
-    drawArea.w = canvas.width;
-    drawArea.h = canvas.height;
+    console.log(drawArea)
 
-    containerArea = {
-      w: canvas.clientWidth,
-      h: h
-    };
+    if (canvas.width !== drawArea.w) {
+      canvas.width = drawArea.w;
+    }
+    if (canvas.height !== drawArea.h) {
+      canvas.height = drawArea.h;
+    }
+
+    // if (rect.width > maxDrawArea.w) {
+    //   canvas.width = maxDrawArea.w;
+    //   canvas.height = h * (canvas.width / canvas.clientWidth);
+    // } else {
+    //   canvas.width = Math.floor(w);
+    //   canvas.height = Math.floor(h);
+    // }
+
+    // drawArea.w = canvas.width;
+    // drawArea.h = canvas.height;
+
+    containerArea.w = canvas.clientWidth;
+    containerArea.h = h;
+    // w: canvas.clientWidth,
+    // h: h
+    // };/
 
     scrollRect.innerR = scrollRect.innerL + drawArea.w;
     scrollRect.innerB = scrollRect.innerT + drawArea.h;
 
     clipViewport();
 
-    // TODO: Make onResize callback
-    // onResize();
+    props.onResize();
   }
 
   // public mounted() {
@@ -199,8 +241,7 @@ export function useBaseCanvas(props: any, canvasRef: Ref<HTMLCanvasElement | nul
       scrollRect.innerB = scrollRect.innerT + drawArea.h;
     }
 
-    // TODO: Make onResize callback
-    // this.onResize();
+    props.onResize();
   }
 
   function scrollViewportTo(xVal: number, yVal: number) {
@@ -224,8 +265,7 @@ export function useBaseCanvas(props: any, canvasRef: Ref<HTMLCanvasElement | nul
     );
     scrollRect.innerB = scrollRect.innerT + drawArea.h;
 
-    // TODO: Make onResize callback
-    // this.onResize();
+    props.onResize();
   }
 
   function updateScrollRect(rect: ScrollRect) {
@@ -233,8 +273,7 @@ export function useBaseCanvas(props: any, canvasRef: Ref<HTMLCanvasElement | nul
       ...rect
     };
 
-    // TODO: Make onResize callback
-    // this.onResize();
+    props.onResize();
   }
 
   return {
