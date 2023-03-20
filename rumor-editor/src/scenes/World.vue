@@ -5,7 +5,8 @@
         <TileToolbar />
       </div>
       <div class="world-tile-selector">
-        <TilePalette :tilesetView="tilesetView" :toolView="toolView" :hideHScroll="true" @tileSelected="tileSelected">
+        <TilePalette :tilesetView="worldStore.getTilesetView" :toolView="worldStore.getToolView" :hideHScroll="true"
+          @tileSelected="tileSelected">
         </TilePalette>
       </div>
 
@@ -14,7 +15,8 @@
       </div>
 
       <div class="world-map-editor">
-        <MapEditor :useMapStore="true" :toolView="toolView" :tilesetView="tilesetView" @tileSelected="tileSelected">
+        <MapEditor :useMapStore="true" :toolView="worldStore.getToolView" :tilesetView="worldStore.getTilesetView"
+          @tileSelected="tileSelected">
         </MapEditor>
       </div>
     </div>
@@ -45,14 +47,12 @@ import tileset from "@/data/tileset-world.json";
 import { RumorService } from "@/service/rumor/interface";
 import { RumorServiceLocal } from "@/service/rumor/local";
 import { computed, onMounted, ref } from "vue";
-import { useStore } from "@/store";
+import { useWorldStore } from "@/store/world";
 
 const mapLoaded = ref(false);
 
-const store = useStore();
+const worldStore = useWorldStore();
 
-const tilesetView = computed(() => store.getters['world/getTilesetView']);
-const toolView = computed(() => store.getters['world/getToolView']);
 
 // @world.Mutation("selectTileIndices") selectTileIndices: any;
 
@@ -69,8 +69,7 @@ onMounted(() => {
 });
 
 function tileSelected(selectedTileIndices: TileSelection) {
-  // TODO Link state
-  // this.selectTileIndices(selectedTileIndices);
+  worldStore.selectTileIndices(selectedTileIndices);
 }
 
 </script>

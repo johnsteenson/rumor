@@ -1,7 +1,7 @@
 <template>
   <div class="map-base" ref="containerRef">
     <CanvasScrollport :scrollRect="baseCanvas.scrollRect" :size="baseCanvas.containerArea"
-      :hideHScroll="baseCanvas.hideHScroll" :hideVScroll="baseCanvas.hideVScroll" @update="baseCanvas.updateScrollRect">
+      :hideHScroll="baseCanvas.hideHScroll" :hideVScroll="baseCanvas.hideVScroll" @update="clickScrolling">
       <canvas ref="canvasRef" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerUp"
         @contextmenu="contextMenu" width="400" height="300"></canvas>
     </CanvasScrollport>
@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, PropType, nextTick } from 'vue';
-import { TileSize, Rect, Point, ToolView, TileMap, TilesetView } from "@rumor/common";
+import { TileSize, Rect, Point, ToolView, TileMap, TilesetView, ScrollRect } from "@rumor/common";
 import {
   isRectEqual,
   createRectFromPts,
@@ -27,7 +27,7 @@ import {
   TileChange,
   TileSelection
 } from "@rumor/common";
-import { useBaseCanvas } from "@/canvas/useBaseCanvas"
+import { useBaseCanvas } from "@/canvas/baseCanvas"
 
 import { mapStore } from "@/world/";
 
@@ -38,7 +38,8 @@ import {
   registerWindowEvent,
   unregisterWindowEvent
 } from "../../lib/windowEvent";
-import { useMapCanvas } from '@/canvas/useMapCanvas';
+import { useMapCanvas } from '@/canvas/mapCanvas';
+import { useWorldStore } from '@/store/world';
 
 enum MapPointerMode {
   OFF = 0,
@@ -61,12 +62,14 @@ const props = defineProps({
   },
   useMap: Object as PropType<TileMap>,
   useMapStore: Boolean
-})
+});
+
+const emit = defineEmits(['tileSelected']);
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const containerRef = ref<HTMLElement | null>(null);
-let canvas: HTMLCanvasElement;
-let context: CanvasRenderingContext2D;
+
+const worldStore = useWorldStore();
 
 const baseCanvas = useBaseCanvas({ hideHScroll: false, hideVScroll: false, onResize }, containerRef, canvasRef);
 const mapCanvas = useMapCanvas({
@@ -76,7 +79,6 @@ const mapCanvas = useMapCanvas({
   useMapStore: props.useMapStore
 }, mapStore, baseCanvas)
 
-let baseCoor: Rect;
 
 let lastDrawTileCoor: Point = { x: -1, y: -1 };
 let startDrawTileCoor: Point = { x: -1, y: -1 };
@@ -90,15 +92,15 @@ let clickTimestamp: number;
 
 // TODO Handle action
 // @world.Action("setLayer") setLayer!: Function;
-// TODO Handle created
+// TODO Check if baseCoor is needed
 //   private created() {
 //   this.baseCoor = {} as Rect;
 // }
 
 
 onMounted(() => {
-  canvas = canvasRef.value!;
-  context = canvas.getContext("2d") as CanvasRenderingContext2D;
+  // canvas = canvasRef.value!;
+  // context = canvas.getContext("2d") as CanvasRenderingContext2D;
   // this.canvas = this.$el.getElementsByTagName(
   //     "canvas"
   //   )[0] as HTMLCanvasElement;
@@ -195,7 +197,7 @@ function isDoubleClick() {
 }
 
 function drawSelectedTiles(event: PointerEvent) {
-  const mouse = getMouseCoor(event, canvas),
+  const mouse = getMouseCoor(event, canvasRef.value!),
     map = props.useMap!,
     tilesetView = props.tilesetView!,
     tilePt = mapCanvas.canvasToTileCoor(mouse.x, mouse.y),
@@ -299,11 +301,15 @@ function copySelectedTiles(event: PointerEvent) {
     fromMap: true
   };
 
-  // this.$emit("tileSelected", tileSelection);
+  emit('tileSelected', tileSelection);
+}
+
+function clickScrolling(rect: ScrollRect) {
+  baseCanvas.updateScrollRect(rect);
 }
 
 function dragScrolling(event: PointerEvent) {
-  const mouse = getMouseCoor(event, canvas);
+  const mouse = getMouseCoor(event, canvasRef.value!);
 
   if (startDrawCanvasCoor.x === -1) {
     startDrawCanvasCoor.x = mouse.x;
@@ -383,7 +389,8 @@ function drawHoverRect(event: PointerEvent) {
 }
 
 function drawSelectionRect(rect: Rect) {
-  const x = rect.l,
+  const context = canvasRef.value!.getContext('2d') as CanvasRenderingContext2D,
+    x = rect.l,
     y = rect.t,
     w = rect.r - rect.l,
     h = rect.b - rect.t;
@@ -470,8 +477,7 @@ function contextMenu(event: MouseEvent) {
 }
 
 function swapLayers() {
-  // TODO: Update Vuex
-  // setLayer(this.tilesetView.curLayer === 0 ? 1 : 0);
+  worldStore.setLayer(props.tilesetView.curLayer === 0 ? 1 : 0);
 }
 
 

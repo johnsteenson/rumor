@@ -1,7 +1,7 @@
 <template>
   <div ref="containerRef" class="tile-palette" @wheel="onWheel">
     <CanvasScrollport :scrollRect="baseCanvas.scrollRect" :size="baseCanvas.containerArea"
-      :hideHScroll="baseCanvas.hideHScroll" :hideVScroll="baseCanvas.hideVScroll" @update="baseCanvas.updateScrollRect">
+      :hideHScroll="baseCanvas.hideHScroll" :hideVScroll="baseCanvas.hideVScroll" @update="onScrollbar">
       <canvas ref="canvasRef" class="drawable" @pointerdown="pointerDown" @pointermove="pointerMove"
         @pointerup="pointerUp" @contextmenu="contextMenu" width="1" height="1"></canvas>
     </CanvasScrollport>
@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { TilesetView, ToolView } from "@rumor/common";
+import { ScrollRect, TilesetView, ToolView } from "@rumor/common";
 import { Axis, TileSize, Rect, Point } from "@rumor/common";
 import TilesetBase from "./TilesetBase.vue";
 import { TileSelection } from "@rumor/common";
@@ -19,8 +19,8 @@ import { registerWindowEvent, unregisterWindowEvent } from "@/lib/windowEvent";
 import CanvasScrollport from "@/components/ui/CanvasScrollport.vue";
 import { getMouseCoor } from "../../canvas/utils";
 import { nextTick, onMounted, PropType, ref, watch } from "vue";
-import { useBaseCanvas } from "@/canvas/useBaseCanvas";
-import { useTilesetCanvas } from "@/canvas/useTilesetCanvas";
+import { useBaseCanvas } from "@/canvas/baseCanvas";
+import { useTilesetCanvas } from "@/canvas/tilesetCanvas";
 
 const WHEEL_SCROLL_SPEED = 70;
 
@@ -154,6 +154,10 @@ function onWheel(event: WheelEvent) {
   } else {
     baseCanvas.scrollViewport(0, -WHEEL_SCROLL_SPEED);
   }
+}
+
+function onScrollbar(rect: ScrollRect) {
+  baseCanvas.updateScrollRect(rect);
 }
 
 function contextMenu(event: MouseEvent) {

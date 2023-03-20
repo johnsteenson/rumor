@@ -12,6 +12,7 @@ import { connectSocket, ConnectResponse } from './connect';
 
 import tileset from "@/data/tileset-world.json";
 import { Store } from 'vuex';
+import { useProjectStore } from "@/store/project";
 
 export class RumorServiceIo extends RumorService {
 
@@ -41,11 +42,13 @@ export class RumorServiceIo extends RumorService {
   }
 
   public async connect(token: string): Promise<void> {
+    const projectStore = useProjectStore();
+
     return new Promise<void>((resolve, reject) => {
       connectSocket(token)
         .then((response: ConnectResponse) => {
           this.socketClient = response.socketClient;
-          this.store.commit('project/setSignedInUser', response.username);
+          projectStore.setSignedInUser(response.username);
 
           this.registerSocketEvents();
           resolve();

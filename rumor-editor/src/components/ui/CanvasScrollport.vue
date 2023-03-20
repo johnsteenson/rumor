@@ -10,7 +10,6 @@
 
 <script lang="ts" setup>
 import { clampBetween } from "@/lib/utils";
-import { namespace } from "s-vuex-class";
 import { ScrollRect, Dimension, Point, Axis } from "@rumor/common";
 
 import {
@@ -36,12 +35,21 @@ let clickOrigin: number = 0;
 let trackOrigin: number = 0;
 
 
-const props = defineProps({
-  scrollRect: Object as PropType<ScrollRect>,
-  size: Object as PropType<Dimension>,
+const props = defineProps<{
+  scrollRect: ScrollRect,
+  size: Dimension,
   hideVScroll: Boolean,
   hideHScroll: Boolean
-})
+}>()
+
+// {
+//   scrollRect: Object as PropType<ScrollRect>,
+//   size: Object as PropType<Dimension>,
+//   hideVScroll: Boolean,
+//   hideHScroll: Boolean
+// })
+
+const emit = defineEmits(['update'])
 
 let dragEventFunc!: (evt: MouseEvent) => void;
 
@@ -56,6 +64,8 @@ const handleDragEvent = (event: MouseEvent) => {
       ? hCanvasRef.value!
       : vCanvasRef.value!,
     pt: Point = getMouseCoor(event, canvas);
+
+  console.log(canvas, draggingAxis)
 
   switch (draggingAxis) {
     case Axis.HORIZONTAL:
@@ -151,8 +161,7 @@ function scrollTo(axis: Axis, val: number) {
       break;
   }
 
-  // TODO Change to emit
-  // updateScrollRect(rect);
+  emit('update', rect);
 }
 
 // @Emit("update")
@@ -183,6 +192,7 @@ function scrollTo(axis: Axis, val: number) {
 watch(() => props.scrollRect,
   () => {
     nextTick(() => {
+      console.log('UPDATE SCROLL RECT FOR SCROLLBARS', props.scrollRect)
       draw();
     });
   },
@@ -261,7 +271,7 @@ function drawHorizontal() {
 
 function handleClick(
   val: number,
-  draggingAxis: Axis,
+  clickAxis: Axis,
   start: number,
   end: number,
   scrollLen: number
@@ -270,6 +280,9 @@ function handleClick(
 
   clickOrigin = val;
   trackOrigin = start;
+  draggingAxis = clickAxis;
+
+  console.log('INITIAL CLICK', vCanvasRef.value, hCanvasRef.value, draggingAxis)
 
   if (val < SCROLLBAR_WIDTH) {
     scrollTo(draggingAxis, start - SCROLLBAR_OFFSET);

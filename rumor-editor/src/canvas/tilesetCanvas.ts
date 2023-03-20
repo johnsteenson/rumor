@@ -14,7 +14,7 @@ import { ImageManager } from "@rumor/common";
 import * as Rumor from "@rumor/common";
 
 import { nextTick, Ref, watch } from "vue";
-import { BaseCanvas } from "./useBaseCanvas";
+import { BaseCanvas } from "./baseCanvas";
 
 export function useTilesetCanvas(props: any, baseCanvas: BaseCanvas) {
   let image: Rumor.TileImage;

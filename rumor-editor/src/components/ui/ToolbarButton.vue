@@ -5,16 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-
 import { ToolbarItem } from "./ToolbarGroup.vue";
-
-// Icons from: https://materialdesignicons.com/
-import BrushIcon from "vue-material-design-icons/Brush.vue";
-import FormatColorFillIcon from "vue-material-design-icons/FormatColorFill.vue";
-import Numeric1BoxMultiple from "vue-material-design-icons/Numeric1BoxMultiple.vue";
-import Numeric2BoxMultiple from "vue-material-design-icons/Numeric2BoxMultiple.vue";
-import ShapeRectanglePlus from "vue-material-design-icons/ShapeRectanglePlus.vue";
-import Undo from "vue-material-design-icons/Undo.vue";
 import { PropType } from "vue";
 
 const props = defineProps({

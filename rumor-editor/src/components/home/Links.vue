@@ -2,11 +2,11 @@
   <Card title="About">
     <ul>
       <li>
-        <EarthIcon />
+        <icon-earth />
         <a href="https://webrpg.dev/" target="_blank">webrpg.dev</a>
       </li>
       <li>
-        <GithubIcon />
+        <icon-github />
         <a href="https://github.com/johnsteenson/rumor-web" target="_blank">rumor-web</a>
       </li>
     </ul>
@@ -15,9 +15,6 @@
 
 <script lang="ts" setup>
 import Card from "@/components/ui/Card.vue";
-
-// import GithubIcon from "vue-material-design-icons/Github.vue";
-// import EarthIcon from "vue-material-design-icons/Earth.vue";
 
 </script>
 

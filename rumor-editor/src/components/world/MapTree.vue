@@ -5,8 +5,6 @@
 </template>
 
 <script lang="ts" setup>
-import { namespace } from "s-vuex-class";
-
 import { getServiceInterface } from "@/service/rumor";
 
 import TreeView from "@/components/ui/TreeView.vue";
@@ -14,8 +12,6 @@ import { TreeItem } from "../../lib/ui/tree";
 import { TileMap, TileMapTree } from "@rumor/common";
 import { mapStore } from "@/world";
 import { onMounted, Ref, ref } from "vue";
-
-const world = namespace("world");
 
 function mapToTreeItem(treeItems: TileMapTree[]): TreeItem[] {
   const items: TreeItem[] = [];
@@ -36,13 +32,15 @@ function mapToTreeItem(treeItems: TileMapTree[]): TreeItem[] {
   return items;
 }
 
-let treeRoot: TreeItem[] = [];
+let treeRoot: Ref<TreeItem[]> = ref([]);
 
 let selectedId: Ref<string> = ref("1");
 
 onMounted(() => {
   getServiceInterface().onMapTreeUpdate((tileMapTree: TileMapTree) => {
     const tree = mapToTreeItem([tileMapTree]);
+
+    treeRoot.value = tree;
 
     // TODO Fix -- $set no longer needed in Vue 3
     // this.$set(this, "treeRoot", tree);

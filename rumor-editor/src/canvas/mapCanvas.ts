@@ -29,7 +29,7 @@ import CanvasBase from "./CanvasBase.vue";
 
 import { MapStore } from "@/world/map";
 
-import { BaseCanvas } from "./useBaseCanvas";
+import { BaseCanvas } from "./baseCanvas";
 
 const MAX_LAYER = 2; // hardcoded for now
 
@@ -137,6 +137,10 @@ export function useMapCanvas(props: any, mapStore: MapStore, baseCanvas: BaseCan
   }
 
   function updateCoordinates() {
+    if (!map) {
+      return;
+    }
+
     mapOffset = calculateCenterCoorOffset();
     tileDrawRect = calculateTileDrawRect(map, tileSize);
   }

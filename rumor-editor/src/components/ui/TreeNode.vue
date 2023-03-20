@@ -18,12 +18,6 @@
 </template>
 
 <script lang="ts" setup>
-// import PlusBoxMultipleOutline from "vue-material-design-icons/PlusBoxMultipleOutline.vue";
-// import MinusBoxMultipleOutline from "vue-material-design-icons/MinusBoxMultipleOutline.vue";
-
-// import FileDocumentBoxOutline from "vue-material-design-icons/FileDocumentOutline.vue";
-// import FolderOutline from "vue-material-design-icons/FolderOutline.vue";
-
 import { TreeItem, TreeState } from "@/lib/ui/tree";
 import { PropType } from "vue";
 

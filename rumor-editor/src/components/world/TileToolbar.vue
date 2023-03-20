@@ -6,62 +6,62 @@
         </ToolbarButton>
       </div>
       <div class>
-        <ToolbarGroup type="button" :items="items" :pressed="toolId" @changed="changeTool" />
+        <ToolbarGroup type="button" :items="items" :pressed="worldStore.tool" @changed="changeTool" />
       </div>
 
       <div class="tile-toolbar-spacer"></div>
 
       <div class>
-        <ToolbarGroup type="tab" :items="layerItems" :pressed="layerId" @changed="changeLayer" />
+        <ToolbarGroup type="tab" :items="layerItems" :pressed="worldStore.curLayer" @changed="changeLayer" />
       </div>
     </div>
   </Toolbar>
 </template>
 
 <script lang="ts" setup>
-import { namespace } from "s-vuex-class";
 
 import Toolbar from "@/components/ui/Toolbar.vue";
 import ToolbarGroup, { ToolbarItem } from "@/components/ui/ToolbarGroup.vue";
 import ToolbarButton from "@/components/ui/ToolbarButton.vue";
 import { ref } from "vue";
+import { useWorldStore } from "@/store/world";
 
-const world = namespace("world");
+const worldStore = useWorldStore();
 
 const items: ToolbarItem[] = [
   {
     id: 0,
     label: "Pencil",
-    icon: "brush-icon",
+    icon: "icon-brush",
   },
   {
     id: 1,
     label: "Fill",
-    icon: "format-color-fill-icon",
+    icon: "icon-format-color-fill",
   },
   {
     id: 2,
     label: "Rectangle",
-    icon: "shape-rectangle-plus",
+    icon: "icon-shape-rectangle-plus",
   },
 ];
 
 const undoItem: ToolbarItem = {
   id: -1,
   label: "Undo",
-  icon: "undo",
+  icon: "icon-undo",
 };
 
 const layerItems: ToolbarItem[] = [
   {
     id: 0,
     label: "Layer 1",
-    icon: "numeric-1-box-multiple",
+    icon: "icon-numeric-1-box-multiple",
   },
   {
     id: 1,
     label: "Layer 2",
-    icon: "numeric-2-box-multiple",
+    icon: "icon-numeric-2-box-multiple",
   },
 ];
 
@@ -79,14 +79,12 @@ let layerId = ref(0)
 // @world.State("curLayer") layerId!: number;
 
 function changeTool(id: number) {
-  // TODO fix action
-  // this.setTool(id);
+  worldStore.setTool(id);
 }
 
 function clickUndo() {
   undoPressed.value = true;
-  // TODO fix action
-  // this.undo();
+  worldStore.undo();
 }
 
 function releaseUndo() {
@@ -94,8 +92,7 @@ function releaseUndo() {
 }
 
 function changeLayer(id: number) {
-  // TODO fix action
-  // setLayer(id);
+  worldStore.setLayer(id)
 }
 
 </script>

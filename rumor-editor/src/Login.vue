@@ -25,7 +25,7 @@ import Card from "@/components/ui/Card.vue";
 import { getServiceInterface } from "@/service/rumor";
 import { signIn, signInWithToken } from "@/service/signIn";
 import { ref } from "vue";
-import { useStore } from "./store";
+import { useProjectStore } from "./store/project";
 
 // const project = namespace("project");
 
@@ -38,7 +38,7 @@ const username = ref("");
 const password = ref("");
 const errorMsg = ref("");
 
-const store = useStore();
+const projectStore = useProjectStore();
 
 
 async function login() {
@@ -51,10 +51,11 @@ async function login() {
       getServiceInterface()
         .connect(token)
         .then(() => {
+          console.log('SIGNED IN')
           window.localStorage.setItem("token", token);
 
-          store.commit('project/setOffline', false);
-          store.commit('project/setLoggedIn', true);
+          projectStore.setOffline(false);
+          projectStore.setLoggedIn(true);
         });
     })
     .catch(err => {

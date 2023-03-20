@@ -1,11 +1,12 @@
 <template>
   <div id="app">
     <BrowserCheck />
-    <div class="app-contents" v-if="loggedIn">
+    <div class="app-contents" v-if="projectStore.loggedIn">
       <Header />
       <router-view />
     </div>
-    <Login v-if="redirectToLogin && !loggedIn" />
+    <Login v-if="redirectToLogin && !projectStore.loggedIn" />
+    {{ projectStore.loggedIn }}
   </div>
 </template>
 
@@ -16,7 +17,7 @@ import BrowserCheck from "@/components/BrowserCheck.vue";
 
 import { signIn, signInWithToken } from "@/service/signIn";
 import { getServiceInterface } from "@/service/rumor";
-import { useStore } from "./store";
+import { useProjectStore } from "./store/project";
 import { defineComponent, onMounted, ref } from "vue";
 import { computed } from "vue";
 
@@ -28,10 +29,8 @@ export default defineComponent({
   },
 
   setup() {
-    const store = useStore();
+    const projectStore = useProjectStore();
     // store.dispatch("project/loggedIn")
-
-    const loggedIn = computed(() => store.state.project.loggedIn);
 
     const redirectToLogin = ref(false);
 
@@ -43,8 +42,9 @@ export default defineComponent({
             getServiceInterface()
               .connect(token)
               .then(() => {
-                store.commit("project/setOffline", false);
-                store.commit("project/setLoggedIn", true);
+                console.log('LOGGG')
+                projectStore.setOffline(false)
+                projectStore.setLoggedIn(true)
               })
               .catch(() => {
                 redirectToLogin.value = true;
@@ -60,7 +60,7 @@ export default defineComponent({
     });
 
     return {
-      loggedIn,
+      projectStore,
       redirectToLogin
     }
   }

@@ -11,7 +11,7 @@ import {
   getUpArrow,
   getDownArrow
 } from "@/canvas/utils";
-import { reactive, Ref, watch } from "vue";
+import { reactive, ref, Ref, watch } from "vue";
 
 const SCROLLBAR_WIDTH = 16;
 const SCROLLBAR_OFFSET = 8;
@@ -28,7 +28,7 @@ export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>,
     h: 0
   });
 
-  let scrollRect: ScrollRect = reactive({
+  const scrollRect: ScrollRect = reactive({
     innerL: 0,
     innerR: 0,
     outerL: 0,
@@ -269,9 +269,16 @@ export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>,
   }
 
   function updateScrollRect(rect: ScrollRect) {
-    scrollRect = {
-      ...rect
-    };
+    /* Values must be assigned individually.  Otherwise, it will overwrite the reactive wrapper
+       and scrollRect will lose reactivity */
+    scrollRect.innerB = rect.innerB;
+    scrollRect.innerL = rect.innerL;
+    scrollRect.innerR = rect.innerR;
+    scrollRect.innerT = rect.innerT;
+    scrollRect.outerB = rect.outerB;
+    scrollRect.outerL = rect.outerL;
+    scrollRect.outerR = rect.outerR;
+    scrollRect.outerT = rect.outerT;
 
     props.onResize();
   }
