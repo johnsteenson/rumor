@@ -45,6 +45,8 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(['tileSelected']);
+
 const baseCanvas = useBaseCanvas({ hideHScroll: true, hideVScroll: false, onResize }, containerRef, canvasRef);
 const tilesetCanvas = useTilesetCanvas({
   tilesetView: props.tilesetView
@@ -86,8 +88,8 @@ function pointerDown(event: PointerEvent) {
       y: mouse.y + baseCanvas.scrollRect.innerT
     };
 
-  lastTilePt.x = Math.floor(clickPt.x / tilesetCanvas.tileSize.scaledW);
-  lastTilePt.y = Math.floor(clickPt.y / tilesetCanvas.tileSize.scaledH);
+  lastTilePt.x = Math.floor(clickPt.x / tilesetCanvas.tileSize.value.scaledW);
+  lastTilePt.y = Math.floor(clickPt.y / tilesetCanvas.tileSize.value.scaledH);
 
   baseCoor.l = lastTilePt.x;
   baseCoor.t = lastTilePt.y;
@@ -98,8 +100,10 @@ function pointerDown(event: PointerEvent) {
 
   isMouseDown = true;
 
-  // TODO Fix emits
-  // this.$emit("tileSelected", tileSelection);
+  console.log(tileSelection)
+
+  emit("tileSelected", tileSelection);
+  draw();
 }
 
 function pointerMove(event: PointerEvent) {
@@ -111,8 +115,8 @@ function pointerMove(event: PointerEvent) {
         y: mouse.y + baseCanvas.scrollRect.innerT
       },
       tilePt: Point = {
-        x: Math.floor(clickPt.x / tilesetCanvas.tileSize.scaledW),
-        y: Math.floor(clickPt.y / tilesetCanvas.tileSize.scaledH)
+        x: Math.floor(clickPt.x / tilesetCanvas.tileSize.value.scaledW),
+        y: Math.floor(clickPt.y / tilesetCanvas.tileSize.value.scaledH)
       },
       selCoor: Rect = { ...baseCoor };
 
@@ -135,8 +139,8 @@ function pointerMove(event: PointerEvent) {
     }
 
     const tileSelection = createSelectionFromRect(selCoor);
-    // TODO Fix emit
-    // this.$emit("tileSelected", tileSelection);
+    emit("tileSelected", tileSelection);
+    draw();
   }
 }
 
@@ -166,15 +170,12 @@ function contextMenu(event: MouseEvent) {
 
 function createSelectionFromRect(rect: Rect): TileSelection {
   const tilesetView = props.tilesetView!;
-  const l = Math.floor(rect.l / tilesetView.tileSize.scaledW),
-    t = Math.floor(rect.t / tilesetView.tileSize.scaledH),
-    r = Math.floor(rect.r / tilesetView.tileSize.scaledW),
-    b = Math.floor(rect.b / tilesetView.tileSize.scaledH),
-    tileIndices = [];
+  const tileIndices = [];
 
   for (let y = rect.t; y < rect.b; y++) {
     for (let x = rect.l; x < rect.r; x++) {
-      tileIndices.push(y * tilesetCanvas.tilesPerRow + x);
+      console.log(y * tilesetCanvas.tilesPerRow.value + x)
+      tileIndices.push(y * tilesetCanvas.tilesPerRow.value + x);
     }
   }
 
@@ -187,8 +188,11 @@ function createSelectionFromRect(rect: Rect): TileSelection {
 }
 
 function getSelectionRect(selection: TileSelection): Rect {
+  if (!tilesetCanvas.section.value) {
+    throw new Error("Should not call getSelectionRect with no tilesetCanvas")
+  }
   const firstTile = selection.tileIndices[0],
-    tilesPerRow = tilesetCanvas.section.tilesPerRow,
+    tilesPerRow = tilesetCanvas.section.value.tilesPerRow,
     x = firstTile % tilesPerRow,
     y = Math.floor(firstTile / tilesPerRow),
     tileSize: TileSize = props.tilesetView!.tileSize;

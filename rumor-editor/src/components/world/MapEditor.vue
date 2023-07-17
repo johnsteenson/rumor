@@ -198,7 +198,7 @@ function isDoubleClick() {
 
 function drawSelectedTiles(event: PointerEvent) {
   const mouse = getMouseCoor(event, canvasRef.value!),
-    map = props.useMap!,
+    map = mapStore.map,
     tilesetView = props.tilesetView!,
     tilePt = mapCanvas.canvasToTileCoor(mouse.x, mouse.y),
     section = tilesetView.tileset.sections[tilesetView.curSection],

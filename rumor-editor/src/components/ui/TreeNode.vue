@@ -2,13 +2,13 @@
   <ul>
     <li v-for="item in items" :key="item.id">
       <span class="expander-icon" @click="expand(item, $event)" v-if="item.children && item.children.length > 0">
-        <plus v-if="treeState.collapsed[item.id]" />
-        <minus @click="expand(item, $event)" v-else />
+        <icon-plus-box-multiple-outline v-if="treeState.collapsed[item.id]" />
+        <icon-minus-box-multiple-outline @click="expand(item, $event)" v-else />
       </span>
 
       <span @click="select(item, $event)" @dblclick="expand(item, $event)" @contextmenu="contextMenu(item, $event)"
         :class="{ 'tree-selected': selectedId === item.id }">
-        <component :is="item.icon" v-if="item.icon" />
+        <component :is="mapIcon(item.icon)" v-if="item.icon" />
         {{ item.label }}
       </span>
       <TreeNode v-show="!treeState.collapsed[item.id]" :items="item.children" :treeState="treeState"
@@ -19,12 +19,12 @@
 
 <script lang="ts" setup>
 import { TreeItem, TreeState } from "@/lib/ui/tree";
-import { PropType } from "vue";
+import { PropType, ref } from "vue";
 
-const props = defineProps({
+defineProps({
   items: {
-    type: Object as PropType<TreeItem[] | undefined>,
-    required: true
+    type: Object as PropType<TreeItem[]>,
+    required: false
   },
   treeState: {
     type: Object as PropType<TreeState>,
@@ -34,6 +34,21 @@ const props = defineProps({
     type: String
   }
 });
+
+const mapIcons: Record<string, string> = {
+  "plus": "icon-shape-rectangle-plus",
+  "minus": "icon-minus-box-multiple-outline"
+};
+
+function mapIcon(iconName: string) {
+  const icon = mapIcons[iconName];
+  if (!icon) {
+    console.warn(`No icon found for iconName`);
+    return ""
+  }
+
+  return icon;
+}
 
 const emit = defineEmits(['treeItemSelected']);
 

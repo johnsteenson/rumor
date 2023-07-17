@@ -13,23 +13,23 @@ import { ImageManager } from "@rumor/common";
 
 import * as Rumor from "@rumor/common";
 
-import { nextTick, Ref, watch } from "vue";
+import { nextTick, ref, Ref, watch } from "vue";
 import { BaseCanvas } from "./baseCanvas";
 
 export function useTilesetCanvas(props: any, baseCanvas: BaseCanvas) {
   let image: Rumor.TileImage;
-  let section!: Rumor.TilesetSection;
-  let tilesPerRow: number = 0;
+  let section: Ref<Rumor.TilesetSection | null> = ref(null);
+  let tilesPerRow = ref(0);
 
   let tileDrawRect: Rumor.TileDrawRect;
 
-  let tileSize: Rumor.TileSize = {
+  const tileSize: Ref<Rumor.TileSize> = ref({
     w: 0,
     h: 0,
     scaledW: 0,
     scaledH: 0,
     scale: 0
-  }
+  });
 
   let disableCanvasResize: boolean;
 
@@ -55,57 +55,61 @@ export function useTilesetCanvas(props: any, baseCanvas: BaseCanvas) {
   // }
 
   async function loadTilesetView(view: Rumor.TilesetView) {
-    section = view.tileset.sections[view.curSection];
+    section.value = view.tileset.sections[view.curSection];
 
-    console.log(section)
+    console.log('Setting tilesize', view.tileSize)
 
-    tileSize = view.tileSize;
+    tileSize.value = view.tileSize;
 
     image = await ImageManager.getInstance().getTileImage(
-      `/images/${section.imageFile}`,
+      `/images/${section.value.imageFile}`,
       view.tileSize
     );
 
     if (!disableCanvasResize) {
       baseCanvas.setMaxDrawArea(
-        view.tileSize.scaledW * section.tilesPerRow,
+        view.tileSize.scaledW * section.value.tilesPerRow,
         9999
       );
 
       baseCanvas.setViewport({
         l: 0,
         t: 0,
-        r: view.tileSize.scaledW * section.tilesPerRow,
+        r: view.tileSize.scaledW * section.value.tilesPerRow,
         b:
           Math.ceil(
-            section.templateTiles.length / section.tilesPerRow
+            section.value.templateTiles.length / section.value.tilesPerRow
           ) * view.tileSize.scaledH
       });
 
       console.log('NEW VIEWPORT', {
         l: 0,
         t: 0,
-        r: view.tileSize.scaledW * section.tilesPerRow,
+        r: view.tileSize.scaledW * section.value.tilesPerRow,
         b:
           Math.ceil(
-            section.templateTiles.length / section.tilesPerRow
+            section.value.templateTiles.length / section.value.tilesPerRow
           ) * view.tileSize.scaledH
       })
 
       baseCanvas.forceResizeEvent();
     }
 
-    tilesPerRow = section.tilesPerRow; // Math.floor(this.canvas.width / view.tileSize.scaledW);
+    tilesPerRow.value = section.value.tilesPerRow; // Math.floor(this.canvas.width / view.tileSize.scaledW);
     draw();
   }
 
   function calculateTileDrawRect(tileSize: Rumor.TileSize): Rumor.TileDrawRect {
+    if (!section.value) {
+      throw new Error("Calling calculateTileDrawRect with no section");
+    }
+
     const w =
       Math.ceil(
-        section.templateTiles.length / section.tilesPerRow
+        section.value.templateTiles.length / section.value.tilesPerRow
       ) * tileSize.scaledH,
       h = Math.ceil(
-        section.templateTiles.length / section.tilesPerRow
+        section.value.templateTiles.length / section.value.tilesPerRow
       ),
       tileRect: Rumor.Rect = {
         l: Math.floor(baseCanvas.scrollRect.innerL / tileSize.scaledW),
@@ -133,15 +137,15 @@ export function useTilesetCanvas(props: any, baseCanvas: BaseCanvas) {
   }
 
   function drawTiles() {
-    if (!props.tilesetView || !image) {
+    if (!props.tilesetView || !image || !section.value) {
       return;
     }
 
     const canvas = baseCanvas.canvasRef.value!,
       context = canvas.getContext('2d') as CanvasRenderingContext2D,
       tileset: Rumor.Tileset = props.tilesetView.tileset,
-      drawRect = calculateTileDrawRect(tileSize),
-      startIndex = drawRect.tile.t * section.tilesPerRow + drawRect.tile.l;
+      drawRect = calculateTileDrawRect(tileSize.value),
+      startIndex = drawRect.tile.t * section.value.tilesPerRow + drawRect.tile.l;
 
     let sx: number = 0,
       sy: number = drawRect.offset.y,
@@ -156,21 +160,21 @@ export function useTilesetCanvas(props: any, baseCanvas: BaseCanvas) {
     context.rect(0, 0, canvas.width, canvas.height);
     context.fill();
 
-    for (i = startIndex; i < section.templateTiles.length; i++) {
-      if (k > 0 && k % section.tilesPerRow === 0) {
+    for (i = startIndex; i < section.value.templateTiles.length; i++) {
+      if (k > 0 && k % section.value.tilesPerRow === 0) {
         sx = 0;
-        sy = sy + tileSize.scaledH;
+        sy = sy + tileSize.value.scaledH;
       }
 
-      templateTile = section.templateTiles[i];
+      templateTile = section.value.templateTiles[i];
       tileIndex = Array.isArray(templateTile.tile)
         ? templateTile.tile[0]
         : templateTile.tile;
-      tile = section.tiles[tileIndex];
+      tile = section.value.tiles[tileIndex];
       imgTileIndex = Array.isArray(tile.t) ? tile.t[0] : tile.t;
 
       image!.drawTile(context, sx, sy, imgTileIndex);
-      sx = sx + tileSize.scaledW;
+      sx = sx + tileSize.value.scaledW;
       k++;
     }
   }
