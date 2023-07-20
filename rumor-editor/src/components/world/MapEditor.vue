@@ -60,7 +60,7 @@ const props = defineProps({
     type: Object as PropType<ToolView>,
     required: true
   },
-  useMap: Object as PropType<TileMap>,
+  useMap: Object as PropType<TileMap>, /* TODO: Not sure if this is still needed.  Look into getting rid of */
   useMapStore: Boolean
 });
 
@@ -257,7 +257,7 @@ function drawSelectedTiles(event: PointerEvent) {
 function copySelectedTiles(event: PointerEvent) {
   const mouse = getMouseCoor(event, canvasRef.value!),
     tilesetView = props.tilesetView!,
-    map = props.useMap!,
+    map = mapStore.map,
     tilePt = mapCanvas.canvasToTileCoor(mouse.x, mouse.y),
     section = tilesetView.tileset.sections[tilesetView.curSection];
 
@@ -336,7 +336,7 @@ function dragScrolling(event: PointerEvent) {
 
 function drawHoverRect(event: PointerEvent) {
   const mouse = getMouseCoor(event, canvasRef.value!),
-    map = props.useMap!,
+    map = mapStore.map,
     tilePt = mapCanvas.canvasToTileCoor(mouse.x, mouse.y),
     tileSelection = props.toolView.tileSelection;
 

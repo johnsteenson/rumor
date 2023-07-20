@@ -18,7 +18,7 @@ import { registerWindowEvent, unregisterWindowEvent } from "@/lib/windowEvent";
 
 import CanvasScrollport from "@/components/ui/CanvasScrollport.vue";
 import { getMouseCoor } from "../../canvas/utils";
-import { nextTick, onMounted, PropType, ref, watch } from "vue";
+import { nextTick, onMounted, PropType, ref, watch, toRef } from "vue";
 import { useBaseCanvas } from "@/canvas/baseCanvas";
 import { useTilesetCanvas } from "@/canvas/tilesetCanvas";
 
@@ -47,9 +47,11 @@ const props = defineProps({
 
 const emit = defineEmits(['tileSelected']);
 
+const tilesetView = toRef(() => props.tilesetView);
+
 const baseCanvas = useBaseCanvas({ hideHScroll: true, hideVScroll: false, onResize }, containerRef, canvasRef);
 const tilesetCanvas = useTilesetCanvas({
-  tilesetView: props.tilesetView
+  tilesetView: tilesetView
 }, baseCanvas);
 
 
@@ -174,7 +176,6 @@ function createSelectionFromRect(rect: Rect): TileSelection {
 
   for (let y = rect.t; y < rect.b; y++) {
     for (let x = rect.l; x < rect.r; x++) {
-      console.log(y * tilesetCanvas.tilesPerRow.value + x)
       tileIndices.push(y * tilesetCanvas.tilesPerRow.value + x);
     }
   }

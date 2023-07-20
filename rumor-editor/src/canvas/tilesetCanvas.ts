@@ -33,10 +33,11 @@ export function useTilesetCanvas(props: any, baseCanvas: BaseCanvas) {
 
   let disableCanvasResize: boolean;
 
-  watch(() => props.tilesetView,
-    (view) => {
+  watch(props.tilesetView,
+    (view: any) => {
       if (view) {
         nextTick(() => {
+          console.log('nu view', view)
           loadTilesetView(view);
         })
       }
@@ -57,7 +58,7 @@ export function useTilesetCanvas(props: any, baseCanvas: BaseCanvas) {
   async function loadTilesetView(view: Rumor.TilesetView) {
     section.value = view.tileset.sections[view.curSection];
 
-    console.log('Setting tilesize', view.tileSize)
+    console.log(`Setting view`, view)
 
     tileSize.value = view.tileSize;
 

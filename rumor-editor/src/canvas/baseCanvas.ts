@@ -54,7 +54,6 @@ export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>,
   // Setup resize handler
 
   watch(containerRef, (container) => {
-    console.log(container)
     if (container) {
       resizeHandler.add(container, doResize);
     }
