@@ -67,17 +67,6 @@ const layerItems: ToolbarItem[] = [
 
 let undoPressed = ref(false);
 
-// TODO CHange these to connect to vuex state
-let toolId = ref(0);
-let layerId = ref(0)
-
-// TODO: Link up actions
-// @world.Action("setTool") setTool!: Function;
-// @world.Action("undo") undo!: Function;
-// @world.Action("setLayer") setLayer!: Function;
-// @world.State("tool") toolId!: number;
-// @world.State("curLayer") layerId!: number;
-
 function changeTool(id: number) {
   worldStore.setTool(id);
 }

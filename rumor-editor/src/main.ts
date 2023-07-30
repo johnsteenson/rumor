@@ -8,8 +8,6 @@ import icons from './icons';
 import './rumor.css';
 import 'vue-material-design-icons/styles.css';
 
-// Vue.config.productionTip = false;
-
 const pinia = createPinia();
 
 const app = createApp(App as any)
