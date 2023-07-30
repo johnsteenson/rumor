@@ -71,7 +71,7 @@ const containerRef = ref<HTMLElement | null>(null);
 
 const worldStore = useWorldStore();
 
-const baseCanvas = useBaseCanvas({ hideHScroll: false, hideVScroll: false, onResize }, containerRef, canvasRef);
+const baseCanvas = useBaseCanvas({ name: 'MapEditor', hideHScroll: false, hideVScroll: false, onResize }, containerRef, canvasRef);
 const mapCanvas = useMapCanvas({
   tilesetView: props.tilesetView,
   toolView: props.toolView,
@@ -180,7 +180,7 @@ function getSelectionCoorForMapCoor(
 }
 
 function isDoubleClick() {
-  if (clickTimestamp) {
+  if (!clickTimestamp) {
     clickTimestamp = performance.now();
     return false;
   }
@@ -477,6 +477,7 @@ function contextMenu(event: MouseEvent) {
 }
 
 function swapLayers() {
+  console.log(props.tilesetView.curLayer);
   worldStore.setLayer(props.tilesetView.curLayer === 0 ? 1 : 0);
 }
 

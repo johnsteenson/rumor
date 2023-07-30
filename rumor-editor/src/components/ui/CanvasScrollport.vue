@@ -282,8 +282,6 @@ function handleClick(
   trackOrigin = start;
   draggingAxis = clickAxis;
 
-  console.log('INITIAL CLICK', vCanvasRef.value, hCanvasRef.value, draggingAxis)
-
   if (val < SCROLLBAR_WIDTH) {
     scrollTo(draggingAxis, start - SCROLLBAR_OFFSET);
   } else if (val > scrollLen) {
@@ -647,11 +645,13 @@ div.canvas-container {
 }
 
 canvas.vbar {
+  position: absolute;
   top: 0px;
   right: 0px;
 }
 
 canvas.hbar {
+  position: absolute;
   left: 0;
   bottom: 0;
 }

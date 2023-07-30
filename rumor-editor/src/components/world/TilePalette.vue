@@ -49,7 +49,7 @@ const emit = defineEmits(['tileSelected']);
 
 const tilesetView = toRef(() => props.tilesetView);
 
-const baseCanvas = useBaseCanvas({ hideHScroll: true, hideVScroll: false, onResize }, containerRef, canvasRef);
+const baseCanvas = useBaseCanvas({ name: "TilePalette", hideHScroll: true, hideVScroll: false, onResize }, containerRef, canvasRef);
 const tilesetCanvas = useTilesetCanvas({
   tilesetView: tilesetView
 }, baseCanvas);
@@ -419,7 +419,10 @@ div.tile-palette {
   padding: 0 0 0 0;
 }
 
+/* Going to try setting this programatically so it's more accurate */
 canvas {
-  width: calc(100% - 16px);
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>

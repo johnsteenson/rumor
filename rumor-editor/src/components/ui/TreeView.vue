@@ -37,7 +37,7 @@ function handleSearch(term: string) {
 }
 
 function treeItemSelected(item: TreeItem) {
-  emits("treeItemSelected", treeItemSelected)
+  emits("treeItemSelected", item)
 }
 
 /*

@@ -18,10 +18,10 @@ const SCROLLBAR_OFFSET = 8;
 
 
 export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>, canvasRef: Ref<HTMLCanvasElement | null>) {
-  let drawArea: Dimension = {
+  let drawArea: Dimension = reactive({
     w: 0,
     h: 0
-  }
+  });
 
   let containerArea: Dimension = reactive({
     w: 0,
@@ -42,10 +42,11 @@ export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>,
   // Private
   const scrollbarWidth = SCROLLBAR_WIDTH;
 
-  const maxDrawArea: Dimension = {
+  /* The maximum draw area for a component.  This is used when we don't want a component to resize beyond a certain width (e.g. Tileset Palette) */
+  const maxDrawArea: Dimension = reactive({
     w: 9999,
     h: 9999
-  }
+  });
 
   // // TODO: Make props
   // const hideHScroll = false;
@@ -79,8 +80,6 @@ export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>,
       return;
     }
 
-    console.log('FORCE RESIZE')
-
     const el = containerRef.value,
       compStyles = window.getComputedStyle(el),
       boundingRect = el.getBoundingClientRect(),
@@ -91,7 +90,7 @@ export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>,
         parseFloat(compStyles.getPropertyValue("border-top-width")) +
         parseFloat(compStyles.getPropertyValue("border-bottom-width"));
 
-    console.log('must resize', {
+    console.log(`[${props.name}] calling forceResizeEvent`, {
       x: boundingRect.left,
       y: boundingRect.top,
       width: boundingRect.width - borderXOffset,
@@ -115,19 +114,27 @@ export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>,
       hScrollOffset = props.hideHScroll ? 0 : SCROLLBAR_WIDTH,
       vScrollOffset = props.hideVScroll ? 0 : SCROLLBAR_WIDTH,
       w = Math.floor(rect.width) - vScrollOffset,
-      h = Math.floor(rect.height) - hScrollOffset;
+      h = Math.floor(rect.height);
 
-    console.log('RESIZE', rect)
-
+    /* TODO:  Make this so the logical units of the canvas is constant rather than an upper bound */
     if (rect.width > maxDrawArea.w) {
       drawArea.w = maxDrawArea.w;
-      drawArea.h = Math.floor(h * (canvas.width / canvas.clientWidth));
+      drawArea.h = Math.floor(h * (drawArea.w / canvas.clientWidth));
+
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+
+      // const context = canvas.getContext('2d');
+      // context?.scale(1, drawArea.w / canvas.clientWidth);
+
+      // console.log(canvas);
+      // console.log(el.getElementsByClassName('drawable'));
+
+      // console.log(`Draw Area drawArea.w=${drawArea.w} h=${h} canvas.width=${canvas.width} canvas.clientWidth=${canvas.clientWidth} val = ${drawArea.h}`);
     } else {
       drawArea.w = Math.floor(w);
       drawArea.h = Math.floor(h);
     }
-
-    console.log(drawArea)
 
     if (canvas.width !== drawArea.w) {
       canvas.width = drawArea.w;
@@ -158,6 +165,15 @@ export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>,
 
     clipViewport();
 
+    console.log(`[${props.name}] called doResize`, {
+      rect,
+      w,
+      h,
+      scrollRect,
+      drawArea,
+      containerArea
+    });
+
     props.onResize();
   }
 
@@ -185,6 +201,7 @@ export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>,
   // protected onResize() { }
 
   function clipViewport() {
+    /* Clip visible area scroll rect (inner) to make sure it doesn't fall outside of total scroll rect (outer) */
     scrollRect.innerL = clampBetween(
       scrollRect.innerL,
       scrollRect.outerL,
@@ -286,6 +303,7 @@ export function useBaseCanvas(props: any, containerRef: Ref<HTMLElement | null>,
     canvasRef,
     containerArea,
     drawArea,
+    maxDrawArea,
     scrollRect,
     hideHScroll: props.hideHScroll,
     hideVScroll: props.hideVScroll,

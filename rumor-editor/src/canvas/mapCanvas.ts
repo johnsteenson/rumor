@@ -55,6 +55,18 @@ export function useMapCanvas(props: any, mapStore: MapStore, baseCanvas: BaseCan
   let visibleViewport: Rect;
   let map: TileMap;
 
+  watch(baseCanvas.canvasRef,
+    (canvas) => {
+      if (canvas) {
+        resizeHandler.add(canvas, (el: Element, rect: DOMRect) => {
+          canvas.width = Math.floor(rect.width);
+          canvas.height = Math.floor(rect.height);
+
+          drawMap();
+        });
+      }
+    });
+
 
   /*
   public mounted() {
@@ -150,12 +162,17 @@ export function useMapCanvas(props: any, mapStore: MapStore, baseCanvas: BaseCan
       return;
     }
 
+    const canvas = baseCanvas.canvasRef.value;
+    const context = canvas.getContext('2d');
+
     baseCanvas.setViewport({
       l: 0,
       r: map.w * tileSize.scaledW,
       t: 0,
       b: map.h * tileSize.scaledH,
     });
+
+    context?.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   async function refreshTilesetImage() {
