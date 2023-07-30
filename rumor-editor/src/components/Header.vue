@@ -3,36 +3,23 @@
     <div>
       <h1>
         Rumor
-        <span v-if="isOffline">(Offline Mode)</span>
+        <span v-if="projectStore.offline">(Offline Mode)</span>
       </h1>
     </div>
     <div class="spacer"></div>
     <div class="header-section">
-      <account-icon />
-      {{signedInUser}}
+      <icon-account />
+      {{ projectStore.signedInUser }}
     </div>
     <div class="header-end"></div>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+<script lang="ts" setup>
+import { useProjectStore } from '@/store/project';
 
-import AccountIcon from "vue-material-design-icons/Account.vue";
+const projectStore = useProjectStore();
 
-const project = namespace("project");
-
-@Component({
-  components: {
-    AccountIcon
-  }
-})
-export default class Header extends Vue {
-  @project.State("offline") isOffline!: boolean;
-
-  @project.State("signedInUser") signedInUser!: string;
-}
 </script>
 
 <style scoped>

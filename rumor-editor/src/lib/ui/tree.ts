@@ -1,6 +1,5 @@
 import { Nullable } from '@rumor/common';
 
-
 export interface TreeItem {
   id: string;
   label: string;

@@ -4,12 +4,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+<script lang="ts" setup>
 
-@Component
-export default class Toolbar extends Vue {}
 </script>
 
 <style scoped>

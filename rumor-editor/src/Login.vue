@@ -9,7 +9,7 @@
 
         <button type="button" @click="login" class="btn btn-primary">Login</button>
 
-        <span class="login-error" v-if="errorMsg">{{errorMsg}}</span>
+        <span class="login-error" v-if="errorMsg">{{ errorMsg }}</span>
 
         <div class="reg-link">
           <a href="https://service.webrpg.dev/register">Register for account</a>
@@ -19,66 +19,63 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Getter, namespace } from "vuex-class";
+<script lang="ts" setup>
 import Card from "@/components/ui/Card.vue";
 
 import { getServiceInterface } from "@/service/rumor";
 import { signIn, signInWithToken } from "@/service/signIn";
+import { ref } from "vue";
+import { useProjectStore } from "./store/project";
 
-const project = namespace("project");
+// const project = namespace("project");
 
 // <button type="button" @click="useOffline" class="btn btn-secondary">Offline Mode</button>
 
-@Component({
-  components: {
-    Card
+// @project.Mutation("setLoggedIn") setLoggedIn!: Function;
+// @project.Mutation("setOffline") setOffline!: Function;
+
+const username = ref("");
+const password = ref("");
+const errorMsg = ref("");
+
+const projectStore = useProjectStore();
+
+
+async function login() {
+  if (!username.value || !password.value) {
+    errorMsg.value = "Must specify a username and password.";
+    return;
   }
-})
-export default class App extends Vue {
-  @project.Mutation("setLoggedIn") setLoggedIn!: Function;
-  @project.Mutation("setOffline") setOffline!: Function;
+  signIn(username.value, password.value)
+    .then((token: string) => {
+      getServiceInterface()
+        .connect(token)
+        .then(() => {
+          console.log('SIGNED IN')
+          window.localStorage.setItem("token", token);
 
-  private username: string = "";
-  private password: string = "";
-  private errorMsg: string = "";
+          projectStore.setOffline(false);
+          projectStore.setLoggedIn(true);
+        });
+    })
+    .catch(err => {
+      errorMsg.value = "Invalid username or password";
+    });
 
-  public mounted() {}
-
-  public async login() {
-    if (!this.username || !this.password) {
-      this.errorMsg = "Must specify a username and password.";
-      return;
-    }
-    signIn(this.username, this.password)
-      .then((token: string) => {
-        getServiceInterface()
-          .connect(token)
-          .then(() => {
-            window.localStorage.setItem("token", token);
-            this.setOffline(false);
-            this.setLoggedIn(true);
-          });
-      })
-      .catch(err => {
-        this.errorMsg = "Invalid username or password";
-      });
-
-    try {
-      const res = await signIn(this.username, this.password);
-    } catch (err) {}
-  }
-
-  /*
-  public async useOffline() {
-    await createLocalInterface();
-
-    this.setOffline(true);
-    this.setLoggedIn(true);
-  }
-  */
+  try {
+    const res = await signIn(username.value, password.value);
+  } catch (err) { }
 }
+
+/*
+public async useOffline() {
+  await createLocalInterface();
+
+  this.setOffline(true);
+  this.setLoggedIn(true);
+}
+*/
+
 </script>
 
 <style>

@@ -1,25 +1,17 @@
 <template>
   <div class="map-tree-container">
-    <TreeView
-      :selectedId="selectedId"
-      :treeRoot="treeRoot"
-      @treeItemSelected="treeItemSelected"
-    />
+    <TreeView :selectedId="selectedId" :treeRoot="treeRoot" @treeItemSelected="treeItemSelected" />
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
-
+<script lang="ts" setup>
 import { getServiceInterface } from "@/service/rumor";
 
 import TreeView from "@/components/ui/TreeView.vue";
 import { TreeItem } from "../../lib/ui/tree";
 import { TileMap, TileMapTree } from "@rumor/common";
 import { mapStore } from "@/world";
-
-const world = namespace("world");
+import { onMounted, Ref, ref } from "vue";
 
 function mapToTreeItem(treeItems: TileMapTree[]): TreeItem[] {
   const items: TreeItem[] = [];
@@ -40,36 +32,33 @@ function mapToTreeItem(treeItems: TileMapTree[]): TreeItem[] {
   return items;
 }
 
-@Component({
-  components: {
-    TreeView
-  }
+let treeRoot: Ref<TreeItem[]> = ref([]);
+
+let selectedId: Ref<string> = ref("1");
+
+onMounted(() => {
+  getServiceInterface().onMapTreeUpdate((tileMapTree: TileMapTree) => {
+    const tree = mapToTreeItem([tileMapTree]);
+
+    treeRoot.value = tree;
+
+    // TODO Fix -- $set no longer needed in Vue 3
+    // this.$set(this, "treeRoot", tree);
+  });
+
+  getServiceInterface().getMapTree();
 })
-export default class MapTree extends Vue {
-  private treeRoot: TreeItem[] = [];
 
-  private selectedId: string = "1";
+function treeItemSelected(treeItem: TreeItem) {
+  selectedId.value = treeItem.id;
 
-  public mounted() {
-    getServiceInterface().onMapTreeUpdate((tileMapTree: TileMapTree) => {
-      const tree = mapToTreeItem([tileMapTree]);
-
-      this.$set(this, "treeRoot", tree);
+  getServiceInterface()
+    .getMap(selectedId.value)
+    .then((map: TileMap) => {
+      mapStore.map = map;
     });
-
-    getServiceInterface().getMapTree();
-  }
-
-  public treeItemSelected(treeItem: TreeItem) {
-    this.selectedId = treeItem.id;
-
-    getServiceInterface()
-      .getMap(this.selectedId)
-      .then((map: TileMap) => {
-        mapStore.map = map;
-      });
-  }
 }
+
 </script>
 
 <style scoped>

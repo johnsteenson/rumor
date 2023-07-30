@@ -5,7 +5,7 @@
         <div class="modal-container">
 
           <div class="modal-header">
-            <span class="title">{{title}}</span>
+            <span class="title">{{ title }}</span>
           </div>
 
           <div class="modal-body">
@@ -26,29 +26,25 @@
   </transition>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { watch } from 'vue';
 
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { namespace } from 'vuex-class';
+const props = defineProps({
+  show: Boolean,
+  title: String
+});
 
-@Component
-export default class Modal extends Vue {
-  @Prop() show!: boolean;
-  @Prop() title!: string;
-
-  @Watch('show', { immediate: true, deep: false }) showChange(newShow: boolean) {
-    if (newShow) {
-      document.body.classList.add('no-scroll');
-    } else {
-      document.body.classList.remove('no-scroll');
-    }
+watch(() => props.show, (newShow) => {
+  if (newShow) {
+    document.body.classList.add('no-scroll');
+  } else {
+    document.body.classList.remove('no-scroll');
   }
-}
+}, { immediate: true, deep: false });
 
 </script>
 
 <style scoped>
-
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -66,7 +62,7 @@ export default class Modal extends Vue {
   vertical-align: middle;
 }
 
-@media (max-width: 640px) { 
+@media (max-width: 640px) {
   .modal-container {
     width: 85%;
     margin: 0px auto;
@@ -79,7 +75,7 @@ export default class Modal extends Vue {
   }
 }
 
-@media (min-width: 640px) { 
+@media (min-width: 640px) {
   .modal-container {
     width: 300px;
     margin: 0px auto;
@@ -124,5 +120,4 @@ export default class Modal extends Vue {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
-
 </style>

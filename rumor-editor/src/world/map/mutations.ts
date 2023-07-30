@@ -10,6 +10,10 @@ import { getServiceInterface } from '@/service/rumor';
 
 const MAX_ITERATIONS = 25000;
 
+/**
+ * The MapMutator performs all mutations on underlying tile map data.  It keeps track of which tiles
+ * have changed for undo functionality, and notifies components of changes to the tilemap.
+ */
 export class MapMutator {
   private map!: TileMap;
 
@@ -47,6 +51,11 @@ export class MapMutator {
     });
   }
 
+  /**
+   * When tiles on the map are changed, 
+   * @param points 
+   * @param preview 
+   */
   private correctSurroundingAutotiles(points: Point[], preview: boolean = false) {
     const w = this.map.w,
       h = this.map.h;

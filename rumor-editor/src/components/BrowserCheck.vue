@@ -1,29 +1,25 @@
 <template>
-  <Modal title="Warning" :show="show" @closed="closed">{{message}}</Modal>
+  <Modal title="Warning" :show="show" @closed="closed">{{ message }}</Modal>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+<script lang="ts" setup>
 import Modal from "@/components/ui/Modal.vue";
-import { namespace } from "vuex-class";
+import { ref } from "vue";
 
 const MOBILE_NOT_SUPPORTED = `This application currently does not support mobile devices,
 but we are hoping to in the future.  You are welcome to continue but we don't guarantee
-anything will work.  Thus, please use a desktop/laptop.`;
+anything will work.  If you are having issues, then please use a desktop computer.`;
 
 const BROWSER_NOT_SUPPORTED = `
 <div style="padding: 15px">
 <h1>Your browser is not supported.</h1>
 <p>
-Thank you for checking out Rumor.  We're happy you are here.  Unfortunately, your browser is not supported.
+Thank you for checking out Rumor.  Unfortunately, your browser is not supported.
 Please consider using the latest version of these browsers:</p>
 <ul style="list-style: disc">
 <li><a href="https://www.mozilla.org/" target="_blank">Mozilla Firefox</a></li>
 <li><a href="https://www.google.com/chrome/" target="_blank">Google Chrome</a></li>
 </ul>
-<p>
-Once you've gotten a new browser, come back and we'll get right to showing you the action!
-</p>
 </div>
 `;
 
@@ -31,31 +27,22 @@ function browserNotSupported() {
   document.body.innerHTML = BROWSER_NOT_SUPPORTED;
 }
 
-@Component({
-  components: {
-    Modal
-  }
-})
-export default class BrowserCheck extends Vue {
-  message: string = "";
-  show: boolean = false;
+const message = ref("");
+const show = ref(false);
 
-  private created() {
-    if (window.innerWidth < 640 || window.innerHeight < 480) {
-      this.message = MOBILE_NOT_SUPPORTED;
-      this.show = true;
-    }
-
-    if (!window.PointerEvent) {
-      browserNotSupported();
-    }
-  }
-
-  public closed() {
-    this.show = false;
-  }
+if (window.innerWidth < 640 || window.innerHeight < 480) {
+  message.value = MOBILE_NOT_SUPPORTED;
+  show.value = true;
 }
+
+if (!window.PointerEvent) {
+  browserNotSupported();
+}
+
+function closed() {
+  show.value = false;
+}
+
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -1,4 +1,5 @@
 import { RumorService } from "@/service/rumor/interface";
+import * as SocketIO from 'socket.io-client';
 
 import { createLayers } from "@/lib/world/tilemap";
 import { TileMap, TileChange, TileChangeEntry, TileMapTree } from '@rumor/common';
@@ -7,16 +8,17 @@ import { Tileset } from '@rumor/common';
 import { serializeChanges, deserializeChanges } from './serialize';
 import { connectSocket, ConnectResponse } from './connect';
 
-import store from '@/store';
+// import store from '@/store';
 
 import tileset from "@/data/tileset-world.json";
 import { Store } from 'vuex';
+import { useProjectStore } from "@/store/project";
 
 export class RumorServiceIo extends RumorService {
 
   private store!: Store<any>;
 
-  private socketClient!: SocketIOClient.Socket;
+  private socketClient!: SocketIO.Socket;
 
   constructor() {
     super();
@@ -40,11 +42,13 @@ export class RumorServiceIo extends RumorService {
   }
 
   public async connect(token: string): Promise<void> {
+    const projectStore = useProjectStore();
+
     return new Promise<void>((resolve, reject) => {
       connectSocket(token)
         .then((response: ConnectResponse) => {
           this.socketClient = response.socketClient;
-          this.store.commit('project/setSignedInUser', response.username);
+          projectStore.setSignedInUser(response.username);
 
           this.registerSocketEvents();
           resolve();

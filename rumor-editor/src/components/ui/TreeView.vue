@@ -1,21 +1,44 @@
 <template>
   <div class="treeView">
-    <TreeNode
-      :items="treeRoot"
-      :treeState="treeState"
-      :selectedId="selectedId"
-      @treeItemSelected="treeItemSelected"
-    ></TreeNode>
+    <TreeNode :items="treeRoot" :treeState="treeState" :selectedId="selectedId" @treeItemSelected="treeItemSelected">
+    </TreeNode>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+<script lang="ts" setup>
 
 import TreeNode from "@/components/ui/TreeNode.vue";
 /* import SearchList from "@/components/common/SearchList.vue"; */
 
 import { TreeItem, TreeState } from "@/lib/ui/tree";
+import { PropType } from "vue";
+
+const props = defineProps({
+  treeRoot: {
+    type: Object as PropType<TreeItem[]>,
+    required: true
+  },
+  selectedId: {
+    type: String
+  }
+});
+
+const emits = defineEmits(["treeItemSelected"])
+
+const searchResults = [];
+
+const treeState: TreeState = {
+  selected: null,
+  collapsed: {}
+}
+
+function handleSearch(term: string) {
+
+}
+
+function treeItemSelected(item: TreeItem) {
+  emits("treeItemSelected", item)
+}
 
 /*
     <div>
@@ -47,34 +70,6 @@ function searchTree(nodes, results, term) {
       },
       searchResults: []
 */
-@Component({
-  components: {
-    TreeNode
-  }
-})
-export default class TreeView extends Vue {
-  @Prop() private treeRoot!: TreeItem;
-
-  @Prop() private selectedId!: string;
-
-  private searchResults: string[] = [];
-
-  private treeState: TreeState = {
-    selected: null,
-    collapsed: {}
-  };
-
-  public handleSearch(term: string) {
-    this.searchResults = [];
-
-    const regex = new RegExp(term, "i");
-    /* searchTree(this.tree, this.searchResults, regex); */
-  }
-
-  public treeItemSelected(item: TreeItem) {
-    this.$emit("treeItemSelected", item);
-  }
-}
 </script>
 
 <style scoped>

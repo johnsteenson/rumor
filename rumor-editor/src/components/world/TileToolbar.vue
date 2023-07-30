@@ -2,106 +2,88 @@
   <Toolbar>
     <div class="toolbar-contents">
       <div class="undo-spacer">
-        <ToolbarButton
-          :item="undoItem"
-          :pressed="undoPressed"
-          @selected="clickUndo"
-          @released="releaseUndo"
-        ></ToolbarButton>
+        <ToolbarButton :item="undoItem" :pressed="undoPressed" @selected="clickUndo" @released="releaseUndo">
+        </ToolbarButton>
       </div>
       <div class>
-        <ToolbarGroup type="button" :items="items" :pressed="toolId" @changed="changeTool" />
+        <ToolbarGroup type="button" :items="items" :pressed="worldStore.tool" @changed="changeTool" />
       </div>
 
       <div class="tile-toolbar-spacer"></div>
 
       <div class>
-        <ToolbarGroup type="tab" :items="layerItems" :pressed="layerId" @changed="changeLayer" />
+        <ToolbarGroup type="tab" :items="layerItems" :pressed="worldStore.curLayer" @changed="changeLayer" />
       </div>
     </div>
   </Toolbar>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { namespace } from "vuex-class";
+<script lang="ts" setup>
 
 import Toolbar from "@/components/ui/Toolbar.vue";
 import ToolbarGroup, { ToolbarItem } from "@/components/ui/ToolbarGroup.vue";
 import ToolbarButton from "@/components/ui/ToolbarButton.vue";
+import { ref } from "vue";
+import { useWorldStore } from "@/store/world";
 
-const world = namespace("world");
+const worldStore = useWorldStore();
 
-@Component({
-  components: {
-    Toolbar,
-    ToolbarButton,
-    ToolbarGroup
-  }
-})
-export default class TileToolbar extends Vue {
-  public items: ToolbarItem[] = [
-    {
-      id: 0,
-      label: "Pencil",
-      icon: "brush-icon"
-    },
-    {
-      id: 1,
-      label: "Fill",
-      icon: "format-color-fill-icon"
-    },
-    {
-      id: 2,
-      label: "Rectangle",
-      icon: "shape-rectangle-plus"
-    }
-  ];
+const items: ToolbarItem[] = [
+  {
+    id: 0,
+    label: "Pencil",
+    icon: "icon-brush",
+  },
+  {
+    id: 1,
+    label: "Fill",
+    icon: "icon-format-color-fill",
+  },
+  {
+    id: 2,
+    label: "Rectangle",
+    icon: "icon-shape-rectangle-plus",
+  },
+];
 
-  public undoItem: ToolbarItem = {
-    id: -1,
-    label: "Undo",
-    icon: "undo"
-  };
+const undoItem: ToolbarItem = {
+  id: -1,
+  label: "Undo",
+  icon: "icon-undo",
+};
 
-  public layerItems: ToolbarItem[] = [
-    {
-      id: 0,
-      label: "Layer 1",
-      icon: "numeric-1-box-multiple"
-    },
-    {
-      id: 1,
-      label: "Layer 2",
-      icon: "numeric-2-box-multiple"
-    }
-  ];
+const layerItems: ToolbarItem[] = [
+  {
+    id: 0,
+    label: "Layer 1",
+    icon: "icon-numeric-1-box-multiple",
+  },
+  {
+    id: 1,
+    label: "Layer 2",
+    icon: "icon-numeric-2-box-multiple",
+  },
+];
 
-  private undoPressed: boolean = false;
+let undoPressed = ref(false);
 
-  @world.Action("setTool") setTool!: Function;
-  @world.Action("undo") undo!: Function;
-  @world.Action("setLayer") setLayer!: Function;
-  @world.State("tool") toolId!: number;
-  @world.State("curLayer") layerId!: number;
-
-  public changeTool(id: number) {
-    this.setTool(id);
-  }
-
-  public clickUndo() {
-    this.undoPressed = true;
-    this.undo();
-  }
-
-  public releaseUndo() {
-    this.undoPressed = false;
-  }
-
-  public changeLayer(id: number) {
-    this.setLayer(id);
-  }
+function changeTool(id: number) {
+  worldStore.setTool(id);
 }
+
+function clickUndo() {
+  undoPressed.value = true;
+  worldStore.undo();
+}
+
+function releaseUndo() {
+  undoPressed.value = false;
+}
+
+function changeLayer(id: number) {
+  worldStore.setLayer(id)
+}
+
 </script>
 
 <style scoped>

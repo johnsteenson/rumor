@@ -2,9 +2,19 @@ import { Module } from 'vuex';
 import { getters } from './getters';
 import { actions } from './actions';
 import { mutations } from './mutations';
-import { WorldState } from './types';
-import { RootState } from '../types';
-import { ToolType } from '@rumor/common';
+import { TileMap, TileChange, ToolType, TileSelection } from '@rumor/common';
+import { Dimension } from '@rumor/common';
+import { Tileset, Tile } from '@rumor/common';
+
+export interface WorldState {
+  tool: ToolType;
+  tileSelection: TileSelection;
+  curSection: number;
+  curLayer: number;
+  mapScale: number;
+  componentScale: number;
+  changes: TileChange[];
+}
 
 const namespaced: boolean = true,
   state: WorldState = {
@@ -21,7 +31,7 @@ const namespaced: boolean = true,
     changes: [],
   };
 
-export const worldModule: Module<WorldState, RootState> = {
+export const worldModule = {
   namespaced,
   state,
   getters,

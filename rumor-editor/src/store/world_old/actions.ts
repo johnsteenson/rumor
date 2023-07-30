@@ -1,11 +1,10 @@
 import { ActionTree } from 'vuex';
 import { WorldState } from './types';
-import { RootState } from '../types';
 
 import { mapStore } from "@/world";
 
-export const actions: ActionTree<WorldState, RootState> = {
-  setTool({ commit }, toolId: number) {
+export const actions = {
+  setTool({ commit }: { commit: Function }, toolId: number) {
     commit('setTool', toolId);
   },
 
@@ -13,7 +12,7 @@ export const actions: ActionTree<WorldState, RootState> = {
     mapStore.mapMutator.undo();
   },
 
-  setLayer({ commit }, layerId: number) {
+  setLayer({ commit }: { commit: Function }, layerId: number) {
     commit('setLayer', layerId);
   }
 

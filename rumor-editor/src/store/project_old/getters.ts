@@ -1,9 +1,8 @@
 import { GetterTree } from 'vuex';
 import { ProjectState } from './types';
-import { RootState } from '../types';
 import { TileSize } from '@rumor/common';
 
-export const getters: GetterTree<ProjectState, RootState> = {
+export const getters = {
   /*
     getTileSize(state: ProjectState): TileSize {
       const {w, h} = state.tileSize,

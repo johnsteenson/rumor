@@ -1,66 +1,72 @@
 <template>
   <div id="app">
     <BrowserCheck />
-    <div class="app-contents" v-if="loggedIn">
+    <div class="app-contents" v-if="projectStore.loggedIn">
       <Header />
       <router-view />
     </div>
-    <Login v-if="redirectToLogin && !loggedIn" />
+    <Login v-if="redirectToLogin && !projectStore.loggedIn" />
+    {{ projectStore.loggedIn }}
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { Getter, namespace } from "vuex-class";
-
 import Header from "@/components/Header.vue";
 import Login from "@/Login.vue";
 import BrowserCheck from "@/components/BrowserCheck.vue";
 
 import { signIn, signInWithToken } from "@/service/signIn";
 import { getServiceInterface } from "@/service/rumor";
+import { useProjectStore } from "./store/project";
+import { defineComponent, onMounted, ref } from "vue";
+import { computed } from "vue";
 
-const project = namespace("project");
-
-@Component({
+export default defineComponent({
   components: {
     BrowserCheck,
     Header,
     Login
-  }
-})
-export default class App extends Vue {
-  @project.State("loggedIn") loggedIn!: boolean;
+  },
 
-  @project.Mutation("setLoggedIn") setLoggedIn!: Function;
-  @project.Mutation("setOffline") setOffline!: Function;
+  setup() {
+    const projectStore = useProjectStore();
+    // store.dispatch("project/loggedIn")
 
-  private redirectToLogin: boolean = false;
+    const redirectToLogin = ref(false);
 
-  public mounted() {
-    const token = window.localStorage.getItem("token");
-    if (token) {
-      signInWithToken(token)
-        .then(() => {
-          getServiceInterface()
-            .connect(token)
-            .then(() => {
-              this.setOffline(false);
-              this.setLoggedIn(true);
-            })
-            .catch(() => {
-              this.redirectToLogin = true;
-            });
-        })
-        .catch(err => {
-          window.localStorage.removeItem("token");
-          this.redirectToLogin = true;
-        });
-    } else {
-      this.redirectToLogin = true;
+    onMounted(() => {
+      const token = window.localStorage.getItem("token");
+      if (token) {
+        signInWithToken(token)
+          .then(() => {
+            getServiceInterface()
+              .connect(token)
+              .then(() => {
+                console.log('LOGGG')
+                projectStore.setOffline(false)
+                projectStore.setLoggedIn(true)
+              })
+              .catch(() => {
+                redirectToLogin.value = true;
+              });
+          })
+          .catch(err => {
+            window.localStorage.removeItem("token");
+            redirectToLogin.value = true;
+          });
+      } else {
+        redirectToLogin.value = true;
+      }
+    });
+
+    return {
+      projectStore,
+      redirectToLogin
     }
   }
-}
+});
+
+
 </script>
 
 <style>
