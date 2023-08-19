@@ -14,7 +14,6 @@
     "lodash": "^4.17.15",
     "mem": "^9.0.2",
     "pinia": "^2.0.33",
-    "s-vuex-class": "^0.4.1",
     "socket.io-client": "^4.6.0",
     "vue": "^3.3.4",
     "vue-material-design-icons": "^5.2.0",

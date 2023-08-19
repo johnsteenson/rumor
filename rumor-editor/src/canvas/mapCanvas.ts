@@ -10,7 +10,6 @@ import {
   TileDraw,
 } from "@rumor/common";
 
-import { namespace } from "s-vuex-class";
 import { TileImage } from "@rumor/common";
 import {
   Tileset,
