@@ -3,12 +3,7 @@ import * as Rumor from '@rumor/common';
 import RenderScheduler from '../scheduler';
 import mapRenderer from './renderer'
 
-const canvas = document.getElementById('game') as HTMLCanvasElement,
-  context = canvas.getContext('2d');
-
-export default class World {
-  private static instance: World;
-
+class World {
   private map: Rumor.TileMap;
 
   private viewport: Rumor.Rect = { l: 0, t: 0, r: 20, b: 15 };
@@ -20,16 +15,6 @@ export default class World {
   private layer: HTMLCanvasElement[] = [];
 
   private offset: Position2D = new Position2D();
-
-  // Entities go here
-  public static getInstance(): World {
-    if (this.instance) {
-      return this.instance;
-    }
-
-    this.instance = new World();
-    return this.instance;
-  }
 
   private renderLayers() {
     // this.layer[0] = mapRenderer.render(this.viewport, 0);
@@ -77,4 +62,4 @@ export default class World {
 
 }
 
-
+export default new World();
