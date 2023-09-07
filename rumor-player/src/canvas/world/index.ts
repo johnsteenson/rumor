@@ -56,7 +56,7 @@ class World {
 
     this.offset.update(deltaMs);
 
-    context.drawImage(this.layer[0], this.offset.x, this.offset.y);
+    // context.drawImage(this.layer[0], this.offset.x, this.offset.y);
   }
 
 
