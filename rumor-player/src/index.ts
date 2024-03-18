@@ -10,7 +10,6 @@ import RenderScheduler from '@/canvas/scheduler'
 import InputManager from '@/input/manager'
 import World from '@/canvas/world';
 
-
 import pixiApp from '@/app/pixi';
 
 import * as PIXI from 'pixi.js'
@@ -18,53 +17,6 @@ import * as PIXI from 'pixi.js'
 // import { gsap } from 'gsap';
 
 import { TilesetTexture } from './canvas/gfx/tilesetTexture';
-
-
-
-const vertexSrc = `
-
-    precision mediump float;
-
-    attribute vec2 aVertexPosition;
-    attribute vec2 aUvs;
-
-    uniform mat3 translationMatrix;
-    uniform mat3 projectionMatrix;
-
-    varying vec2 vUvs;
-
-    void main() {
-
-        vUvs = normalize(aUvs);
-        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
-
-    }`;
-
-const fragmentSrc = `
-
-    precision mediump float;
-
-    varying vec2 vUvs;
-
-    uniform sampler2D uSampler2;
-    uniform float time;
-
-    void main() {
-
-        gl_FragColor.r = 255;
-        // texture2D(uSampler2, vUvs + sin( (time + (vUvs.x) * 14.) ) * 0.1 );
-    }`;
-
-
-/*
-
-Send uniform which is array of "quadrants" of tiles to draw
-Determine which quadrant at pixel
-Look up pixel of tile to draw
-set pixel of tile to draw at quadrant to draw
-
-
-*/
 
 async function main() {
   const map = await app.mapLoader.loadMap('1');
@@ -75,87 +27,43 @@ async function main() {
 
     let texture = resources.world_png;
 
-    // const NORM_W = texture.width / ()
-
-    const geometry = new PIXI.Geometry()
-      .addAttribute('aVertexPosition', // the attribute name
-        [0, 0, // x, y
-          320, 0, // x, y
-          320, 240,
-          0, 240], // x, y
-        2) // the size of the attribute
-      .addIndex([0, 1, 2, 0, 2, 3]); // Create triangles from re-used points
+    // const geometry = new PIXI.Geometry()
+    //   .addAttribute('aVertexPosition', // the attribute name
+    //     [0, 0, // x, y
+    //       320, 0, // x, y
+    //       320, 240,
+    //       0, 240], // x, y
+    //     2) // the size of the attribute
+    //   .addIndex([0, 1, 2, 0, 2, 3]); // Create triangles from re-used points
 
     // geometry
     //   .addAttribute("aUvs", [0, 0, 1, 0, 1, 1, 0, 1], 2)
     //   //  .addIndex([0, 1, 2]);
     //   .addIndex([0, 1, 2]);
 
-    const uniforms = {
-      'tilesetTexture': texture,
-      'tilesetSize': [0, 0, texture.width, texture.height],
-      'screenSize': [0, 0, 320, 240],
-      'tiles': [44, 55, 66, 133, 34],
-      'tilePos': [64, 64]
-    };
+    // tilemapShader.setTexture(texture);
 
-    console.log(uniforms)
+    mapRenderer.updateViewport(map, texture)
 
-    const shader = PIXI.Shader.from(`
-        precision mediump float;
-        attribute vec2 aVertexPosition;
-        attribute vec2 aUvs;
+    // tilemapShader.resizeBuffer(3,3);
+    // tilemapShader.fillTest(20,15);
 
-        uniform mat3 projectionMatrix;
-        uniform mat3 translationMatrix;
+    const layer1 = mapRenderer.shader[0].createMesh();
 
-      //  varying vec2 vUvs;
+    layer1.position.set(0, 0);
+    layer1.zIndex = 1;
 
-        void main() {
-           gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 1.0, 1.0);
-           // gl_Position = vec4(aVertexPosition, 0.0, 1.0);
-      //     vUvs = aUvs;
-        }`,
+    pixiApp.stage.addChild(layer1);
 
-      `precision mediump float;
+    const layer2 = mapRenderer.shader[1].createMesh();
+    mapRenderer.shader[1].uniforms.alpha = 0.0;
 
-        uniform sampler2D tilesetTexture;
-        uniform vec4 tilesetSize;
-        uniform vec4 screenSize;
-        uniform vec2 tilePos;
+    layer2.position.set(0, 0);
+    layer2.zIndex = 1;
+    layer2.blendMode = PIXI.BLEND_MODES.ADD;
+    console.log(layer1.blendMode, layer2.blendMode);
 
-      //  varying vec2 vUvs;
-
-        void main() {
-            // vec2 test = vec2(clamp(vUvs.x, 0., 16.0), clamp(vUvs.y, 0., 16.0));
-            vec2 adjustedFragCoor = vec2(gl_FragCoord.x, screenSize.z - gl_FragCoord.y);
-
-//            vec2 normalizedFragCoord = gl_FragCoord.xy / vec2(screenSize.w, screenSize.z);
-            vec2 rep = mod(adjustedFragCoor.xy, 16.0) + vec2(tilePos.x, tilePos.y); // fract(gl_FragCoord.xy / 32.0);
-            vec2 textureCoord = rep / tilesetSize.zw;
-        //    textureCoord.y = 1.0 - textureCoord.y;
-
-            gl_FragColor = texture2D(tilesetTexture, textureCoord);
-            //vec4(1.0, 0.0, 0.0, 1.0); 
-        }
-
-    `, uniforms);
-
-    /*
-
-    When drawing 0,0, texture pixel to draw is 0,0
-    When drawing 15,0, texture pixel to draw is 15,0
-    When drawing 30,0, texture pixel to draw is 15,0
-
-    */
-
-
-    const mapMesh = new PIXI.Mesh(geometry, shader);
-
-    mapMesh.position.set(0, 0);
-
-    pixiApp.stage.addChild(mapMesh);
-
+    pixiApp.stage.addChild(layer2);
 
 
     // const geometry = new PIXI.Geometry();
@@ -227,7 +135,7 @@ async function main() {
     // pixiApp.stage.addChild(container);
 
     InputManager.keys.up.callback = (event: KeyboardEvent) => {
-      shader.uniforms.tilePos = [128, 128];
+      // shader.uniforms.tilePos = [128, 128];
       // World.scroll(0, -1, 1000);
     }
 
