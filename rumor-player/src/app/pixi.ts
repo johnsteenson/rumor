@@ -13,6 +13,7 @@ const pixiApp = new PIXI.Application({
 });
 
 
+
 // document.getElementById('stage').appendChild(pixiApp.view as any);
 
 // gsap.registerPlugin(PixiPlugin)

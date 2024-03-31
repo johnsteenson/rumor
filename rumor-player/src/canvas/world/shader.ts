@@ -150,6 +150,8 @@ export class TilemapShader {
     i = this.makeQuad(i, 0, 0, 144.0, 128.0)
     i = this.makeQuad(i, 16.0, 0, 144.0, 144.0)
     i = this.makeQuad(i, 0, 16.0, 160.0, 160.0)
+
+
     // this.buffer.data[0] = 0.0;
     // this.buffer.data[1] = 0.0;
     // this.buffer.data[2] = 128.0;
@@ -181,6 +183,10 @@ export class TilemapShader {
   setTexture(texture: PIXI.Texture) {
     this.uniforms.tilesetTexture = texture;
     this.uniforms.tilesetSize = [1.0 / texture.width, 1.0 / texture.height];
+  }
+
+  update() {
+    this._buffer.update();
   }
 
   createMesh() {

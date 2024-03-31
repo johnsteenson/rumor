@@ -58,6 +58,14 @@ function matchWater(layer: MapLayer, tileset: Tileset, x: number, y: number, w: 
   return 0;
 }
 
+/*
+We need to know which tiles are adjacent to the current tile.  We have a bitmask where each bit
+signifies whether there is a matching tile at the direction.  This is used for looking up the indexed
+value of a tile from a dictionary.
+
+For example: if mask has SAME_TILE_N set, then it would look up the corresponding index for the visible tile
+(tile that is displayed).
+*/
 function getAdjacencyMask(layer: MapLayer, tileset: Tileset, x: number, y: number, w: number, h: number,
   newTileTemplateValue: number, matchFunc: Function): number {
   let mask = 0;
@@ -115,6 +123,9 @@ function getAdjacencyMask(layer: MapLayer, tileset: Tileset, x: number, y: numbe
   return mask;
 }
 
+/*
+Gets the visible display tile ID for a rectangular tile index (e.g. walls)
+*/
 export function getRectangularTileIndex(layer: MapLayer, tileset: Tileset, x: number, y: number, w: number, h: number,
   templateTileValue: number) {
   const mask: number = getAdjacencyMask(layer, tileset, x, y, w, h, templateTileValue, matchTerrain),
@@ -126,6 +137,9 @@ export function getRectangularTileIndex(layer: MapLayer, tileset: Tileset, x: nu
   return RECT_AUTOTILE_MAP[normalizedMask];
 }
 
+/*
+Gets the visible display tile ID for a water tile index
+*/
 export function getWaterTileIndex(layer: MapLayer, tileset: Tileset, x: number, y: number, w: number, h: number,
   templateTileValue: number) {
   const mask: number = getAdjacencyMask(layer, tileset, x, y, w, h, templateTileValue, matchWater),

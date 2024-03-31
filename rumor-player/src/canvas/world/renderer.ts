@@ -104,10 +104,6 @@ class MapRenderer {
           // buf[i++] = mapY;
           // buf[i++] = textureX;
           // buf[i++] = textureY;
-          if(mapX == 0 && mapY == 0) {
-            console.log(`VALUE`, l, mapX, mapY, textureX, textureY);
-
-          }
           i = this._shader[l].makeQuad(i, fragX, fragY, textureX, textureY)
   
           fragX = fragX + tileSize.w;
@@ -115,6 +111,8 @@ class MapRenderer {
         fragX = 0;
         fragY = fragY + tileSize.h;
       }
+
+      this._shader[l].update();
     }
 
     console.timeEnd('Rendering map')
