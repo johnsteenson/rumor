@@ -1,4 +1,3 @@
-import { namespace } from "s-vuex-class";
 import { ImageManager } from "@rumor/common";
 
 // /

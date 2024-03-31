@@ -12,6 +12,10 @@ const pixiApp = new PIXI.Application({
   backgroundColor: 0x1099bb
 });
 
+
+
+// document.getElementById('stage').appendChild(pixiApp.view as any);
+
 // gsap.registerPlugin(PixiPlugin)
 // PixiPlugin.registerPIXI(PIXI);
 

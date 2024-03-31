@@ -27,13 +27,6 @@ import { signIn, signInWithToken } from "@/service/signIn";
 import { ref } from "vue";
 import { useProjectStore } from "./store/project";
 
-// const project = namespace("project");
-
-// <button type="button" @click="useOffline" class="btn btn-secondary">Offline Mode</button>
-
-// @project.Mutation("setLoggedIn") setLoggedIn!: Function;
-// @project.Mutation("setOffline") setOffline!: Function;
-
 const username = ref("");
 const password = ref("");
 const errorMsg = ref("");
